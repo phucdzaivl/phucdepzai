@@ -3663,8 +3663,8 @@ function CheckItemBPCRBPCR(v463)
     end
 end
 local v466 = loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-NejiDepzai/UIRedzhub/refs/heads/main/UIRedz.lua"))():MakeWindow({
-    Title = "Long Nhật",
-    SubTitle = "by Longnhat30",
+    Title = "Phucdzai Hub",
+    SubTitle = "by Phuc Ngo",
     SaveFolder = "BloxFruits.lua"
 })
 local l_ScreenGui_0 = Instance.new("ScreenGui")
@@ -4038,7 +4038,7 @@ spawn(function()
         end
     end
 end)
-local _ = v485:AddSection({"AutoRaidPirate"})
+local _ = v485:AddSection({"Auto Raid Pirate"})
 v485:AddToggle({
     Name = "Farm Pirate",
     Description = "\196\144\195\161nh H\225\186\163i T\225\186\183c Tr\195\170n Ph\195\161o \196\144\195\160i Bi\225\187\131n",
@@ -4341,8 +4341,8 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Fram Bone",
-    Description = "Fram S\198\176\198\161ng",
+    Name = "Auto Farm Bone",
+    Description = "Farm X\198\176\198\161ng",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
