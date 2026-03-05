@@ -4368,22 +4368,22 @@ spawn(function()
                         if v598.Name == name then isBoneMob = true break end
                     end
 
-                    if isBoneMob and v598:FindFirstChild("Humanoid") and v598.Humanoid.Health > 0 then
+                    if isBoneMob and v598:FindFirstChild("Humanoid") and v598:FindFirstChild("HumanoidRootPart") and v598.Humanoid.Health > 0 then
                         monsterFound = true
                         repeat
                             task.wait()
                             AutoHaki()
                             EquipWeapon(_G.SelectWeapon)
                             
-                            character.HumanoidRootPart.CFrame = v598.HumanoidRootPart.CFrame * CFrame.new(0, 7, 0)
+                            character.HumanoidRootPart.CFrame = v598.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                             
-                            -- Tấn công
                             game:GetService("VirtualUser"):CaptureController()
                             game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
                             
                             v598.HumanoidRootPart.CanCollide = false
                             v598.Humanoid.WalkSpeed = 0
-                            v598.HumanoidRootPart.Size = Vector3.new(60, 60, 60) 
+                            
+                            v598.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                         until not _G.FarmBone or not v598.Parent or v598.Humanoid.Health <= 0
                         break 
                     end
