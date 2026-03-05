@@ -4349,7 +4349,7 @@ task.spawn(function()
 end)
 v485:AddToggle({
     Name = "Auto Farm Bone",
-    Description = "Tự động farm xương",
+    Description = "Tự động Farm Xương",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
@@ -4360,30 +4360,15 @@ v485:AddToggle({
     end
 })
 
-local BoneZones = {
-    {Name = "Reborn Skeleton", Pos = CFrame.new(-9508, 172, 5737)},
-    {Name = "Living Zombie", Pos = CFrame.new(-10150, 172, 5900)},
-    {Name = "Demonic Soul", Pos = CFrame.new(-9500, 172, 5680)},
-    {Name = "Posessed Mummy", Pos = CFrame.new(-10500, 172, 5680)}
-}
-
-local function FastAttack()
-    pcall(function()
-        local CombatFramework = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
-        local CombatFrameworkLib = require(game:GetService("Resources").Lib.CombatFramework)
-        if CombatFramework.activeController and CombatFramework.activeController.equippedUnit then
-            CombatFrameworkLib.attack(CombatFramework.activeController.equippedUnit)
-        end
-    end)
-end
-
 spawn(function()
     while task.wait() do
-        if _G.FarmBone and PosMon and MonFarm then
+        if _G.FarmBone and PosMon then
             pcall(function()
                 for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                        if (v.HumanoidRootPart.Position - PosMon.Position).Magnitude <= 250 then
+                        local dist = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
+                        
+                        if dist <= 150 then 
                             v.HumanoidRootPart.CanCollide = false
                             v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                             v.HumanoidRootPart.CFrame = PosMon
@@ -4408,13 +4393,15 @@ spawn(function()
                 local root = player.Character:FindFirstChild("HumanoidRootPart")
                 if not root then return end
 
+                local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                 local target = nil
-                
-                for _, zone in pairs(BoneZones) do
-                    for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        if v.Name == zone.Name and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                            target = v
-                            MonFarm = v.Na
+
+                -- Tìm quái
+                for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    for _, name in pairs(BoneEnemies) do
+                        if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+                            target = enemy
+                            MonFarm = enemy.Name 
                             break
                         end
                     end
@@ -4431,19 +4418,14 @@ spawn(function()
                         root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                         root.Velocity = Vector3.new(0, 0, 0)
 
-                        FastAttack()
                         game:GetService("VirtualUser"):CaptureController()
                         game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
                         
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
                     PosMon = nil
                 else
-                    for _, zone in pairs(BoneZones) do
-                        if not target then
-                            topos(zone.Pos * CFrame.new(0, 20, 0))
-                            wait(0.5)
-                        end
-                    end
+
+                    topos(CFrame.new(-9508.56, 180, 5737.36)) 
                 end
             end)
         end
