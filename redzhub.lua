@@ -4375,14 +4375,15 @@ spawn(function()
                             AutoHaki()
                             EquipWeapon(_G.SelectWeapon)
                             
-                            character.HumanoidRootPart.CFrame = v598.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5)
-                            character.HumanoidRootPart.CFrame = CFrame.lookAt(character.HumanoidRootPart.Position, v598.HumanoidRootPart.Position)
+                            character.HumanoidRootPart.CFrame = v598.HumanoidRootPart.CFrame * CFrame.new(0, 7, 0)
                             
+                            -- Tấn công
                             game:GetService("VirtualUser"):CaptureController()
                             game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
                             
                             v598.HumanoidRootPart.CanCollide = false
                             v598.Humanoid.WalkSpeed = 0
+                            v598.HumanoidRootPart.Size = Vector3.new(60, 60, 60) 
                         until not _G.FarmBone or not v598.Parent or v598.Humanoid.Health <= 0
                         break 
                     end
