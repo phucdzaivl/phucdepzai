@@ -4348,16 +4348,37 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Farm Bone",
-    Description = "Farm Xương",
+    Name = "Auto Farm Bone (Pro Max)",
+    Description = "Farm hết bãi này qua bãi khác + Fast Attack",
     Default = false,
-     Callback = function(v591)
+    Callback = function(v591)
         _G.FarmBone = v591
         if not v591 then
             StopTween(_G.FarmBone)
         end
     end
 })
+
+local BoneSpots = {
+    CFrame.new(-9508.56, 175, 5737.36), -- Khu vực Skeleton
+    CFrame.new(-10150, 175, 5900),     -- Khu vực Zombie
+    CFrame.new(-9500, 175, 5680),      -- Khu vực Soul
+    CFrame.new(-10500, 175, 5680)      -- Khu vực Mummy
+}
+local currentSpot = 1
+
+local function FastAttack()
+    pcall(function()
+        local CombatFramework = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+        local CombatFrameworkLib = require(game:GetService("Resources").Lib.CombatFramework)
+        local CurrentCombat = CombatFramework.activeController
+        if CurrentCombat and CurrentCombat.equippedUnit then
+            for i = 1, 3 do -- Tăng số vòng lặp để đánh nhanh hơn
+                CombatFrameworkLib.attack(CurrentCombat.equippedUnit)
+            end
+        end
+    end)
+end
 
 spawn(function()
     while task.wait() do
@@ -4370,9 +4391,9 @@ spawn(function()
                             if PosMon then
                                 v.HumanoidRootPart.CFrame = PosMon
                                 v.HumanoidRootPart.CanCollide = false
-                                v.HumanoidRootPart.Size = Vector3.new(50, 50, 50)
+                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                                 v.Humanoid.WalkSpeed = 0
-                                v.Humanoid:ChangeState(11) -- Khóa trạng thái để quái không văng ra
+                                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
                             end
                         end
                     end
@@ -4387,8 +4408,7 @@ spawn(function()
         if _G.FarmBone then
             pcall(function()
                 local player = game.Players.LocalPlayer
-                local character = player.Character
-                local root = character:FindFirstChild("HumanoidRootPart")
+                local root = player.Character:FindFirstChild("HumanoidRootPart")
                 if not root then return end
 
                 local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
@@ -4405,22 +4425,25 @@ spawn(function()
                 end
 
                 if target then
-                    PosMon = target.HumanoidRootPart.CFrame -- Gán vị trí cho hàm gom quái
+                    PosMon = target.HumanoidRootPart.CFrame
                     repeat
                         task.wait()
                         EquipWeapon(_G.SelectWeapon)
                         AutoHaki()
                         
                         root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
-                        
                         root.Velocity = Vector3.new(0, 0, 0)
 
                         game:GetService("VirtualUser"):CaptureController()
                         game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                        FastAttack()
+                        
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
                     PosMon = nil
                 else
-                    topos(CFrame.new(-9508.56, 180, 5737.36))
+                    currentSpot = (currentSpot % #BoneSpots) + 1
+                    topos(BoneSpots[currentSpot])
+                    wait(1) 
                 end
             end)
         end
