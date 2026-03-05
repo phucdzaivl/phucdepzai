@@ -3663,8 +3663,8 @@ function CheckItemBPCRBPCR(v463)
     end
 end
 local v466 = loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-NejiDepzai/UIRedzhub/refs/heads/main/UIRedz.lua"))():MakeWindow({
-    Title = "Phucdzai Hub",
-    SubTitle = "by Phuc Ngo",
+    Title = "Long Nhật",
+    SubTitle = "by Longnhat30",
     SaveFolder = "BloxFruits.lua"
 })
 local l_ScreenGui_0 = Instance.new("ScreenGui")
@@ -3673,7 +3673,7 @@ l_ScreenGui_0.Parent = game.CoreGui
 local l_ImageButton_0 = Instance.new("ImageButton")
 l_ImageButton_0.Size = UDim2.new(0, 50, 0, 50)
 l_ImageButton_0.Position = UDim2.new(0.15, 0, 0.15, 0)
-l_ImageButton_0.Image = "rbxassetid:// 127804177964032"
+l_ImageButton_0.Image = "rbxassetid://89243668657770"
 l_ImageButton_0.BackgroundTransparency = 1
 l_ImageButton_0.Parent = l_ScreenGui_0
 local l_UICorner_0 = Instance.new("UICorner")
@@ -3753,10 +3753,10 @@ local v494 = v466:MakeTab({"PvP,Player", "user"})
 local v495 = v466:MakeTab({"Shop", "shoppingCart"})
 local v496 = v466:MakeTab({"Settings", "settings"})
 v484:AddDiscordInvite({
-    Name = "Hphúc."
+    Name = "TikTok - ...",
     Description = "Link TikTok",
-    Logo = "rbxassetid:// "127804177964032",
-    Invite = "@phuc_2k13"
+    Logo = "rbxassetid://89243668657770",
+    Invite = "@off.hackthoi"
 })
 local _ = v485:AddSection({"Select Melee,Sword,Gun,Fruit"})
 _G.SelectWeapon = "Melee"
@@ -4038,7 +4038,7 @@ spawn(function()
         end
     end
 end)
-local _ = v485:AddSection({"Auto Raid Pirate"})
+local _ = v485:AddSection({"AutoRaidPirate"})
 v485:AddToggle({
     Name = "Farm Pirate",
     Description = "\196\144\195\161nh H\225\186\163i T\225\186\183c Tr\195\170n Ph\195\161o \196\144\195\160i Bi\225\187\131n",
@@ -4079,7 +4079,7 @@ spawn(function()
         end
     end
 end)
-local _ = v485:AddSection({"Tyrant of the Skies"})
+local _ = v485:AddSection({"TyrantoftheSkies"})
 local v548 = v485:AddParagraph({Title = "Check Eyes Status", Content = "Loading..."})
 task.spawn(function()
     while task.wait(1) do
