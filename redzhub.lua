@@ -9204,6 +9204,73 @@ function InMyNetWork(v1168)
     end
 end
 v496:AddToggle({
+    Name = "Auto M1 Fruit",
+    Description = "Tự động đánh M1 Trái ác quỷ",
+    Default = false,
+    Callback = function(v)
+        _G.AutoM1Fruit = v
+    end
+})
+
+spawn(function()
+    while task.wait() do
+        if _G.BringMonster then
+            pcall(function()
+                local targetCFrame = PosMon or game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
+                for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if enemy:FindFirstChild("Humanoid") and enemy:FindFirstChild("HumanoidRootPart") and enemy.Humanoid.Health > 0 then
+                        if InMyNetWork(enemy.HumanoidRootPart) then
+                            enemy.HumanoidRootPart.CanCollide = false
+                            enemy.Head.CanCollide = false
+                            enemy.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            enemy.HumanoidRootPart.CFrame = targetCFrame
+                            enemy.Humanoid.WalkSpeed = 0
+                            if enemy.Humanoid:FindFirstChild("Animator") then
+                                enemy.Humanoid.Animator:Destroy()
+                            end
+                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        if _G.AutoM1Fruit then
+            pcall(function()
+                local player = game.Players.LocalPlayer
+                local character = player.Character
+                
+                for _, tool in pairs(player.Backpack:GetChildren()) do
+                    if tool.ToolTip == "Blox Fruit" then
+                        character.Humanoid:EquipTool(tool)
+                    end
+                end
+                
+                if character:FindFirstChildOfClass("Tool") and character:FindFirstChildOfClass("Tool").ToolTip == "Blox Fruit" then
+                    game:GetService("VirtualUser"):CaptureController()
+                    game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                end
+            end)
+        end
+    end
+end)
+
+function InMyNetWork(v1168)
+    if not isnetworkowner then
+        if (v1168.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 320 then
+            return false
+        else
+            return true
+        end
+    else
+        return isnetworkowner(v1168)
+    end
+end
+v496:AddToggle({
     Title = "Set Home Point",
     Description = "L\198\176u \196\144i\225\187\131m H\225\187\147i Sinh",
     Value = false,
