@@ -3756,8 +3756,8 @@ local v496 = v466:MakeTab({"Settings", "settings"})
 v484:AddDiscordInvite({
     Name = "TikTok - ...",
     Description = "Link TikTok",
-    Logo = "rbxassetid://89243668657770",
-    Invite = "@off.hackthoi"
+    Logo = "rbxassetid:// 127804177964032",
+    Invite = "@phuc_2k13"
 })
 local _ = v485:AddSection({"Select Melee,Sword,Gun,Fruit"})
 _G.SelectWeapon = "Melee"
@@ -4080,7 +4080,7 @@ spawn(function()
         end
     end
 end)
-local _ = v485:AddSection({"TyrantoftheSkies"})
+local _ = v485:AddSection({"Tyrant of the Skies"})
 local v548 = v485:AddParagraph({Title = "Check Eyes Status", Content = "Loading..."})
 task.spawn(function()
     while task.wait(1) do
