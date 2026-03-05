@@ -3755,10 +3755,17 @@ local v496 = v466:MakeTab({"Settings", "settings"})
 v484:AddDiscordInvite({
     Name = "Hphúc.",
     Description = "Link TikTok",
-    Logo = "rbxassetid:// 127804177964032",
+    Logo = "rbxassetid://127804177964032",
     Invite = "@phuc_2k13"
 })
-local _ = v485:AddSection({"Select Melee,Sword,Gun,Fruit"})
+
+v484:AddDiscordInvite({
+    Name = " Hack Và Anh Em Xã Đoàn 🤞🙌",
+    Description = "Tham gia discord của tôi để nhận them thông báo",
+    Logo = "rbxassetid:// 101400411067843",
+    Invite = " https://discord.gg/PMNdT8MV" 
+
+})local _ = v485:AddSection({"Select Melee,Sword,Gun,Fruit"})
 _G.SelectWeapon = "Melee"
 task.spawn(function()
     while task.wait() do
