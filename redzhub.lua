@@ -4039,7 +4039,7 @@ spawn(function()
         end
     end
 end)
-local _ = v485:AddSection({"AutoRaidPirate"})
+local _ = v485:AddSection({"Auto Raid Pirate"})
 v485:AddToggle({
     Name = "Farm Pirate",
     Description = "\196\144\195\161nh H\225\186\163i T\225\186\183c Tr\195\170n Ph\195\161o \196\144\195\160i Bi\225\187\131n",
