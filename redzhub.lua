@@ -3754,7 +3754,7 @@ local v494 = v466:MakeTab({"PvP,Player", "user"})
 local v495 = v466:MakeTab({"Shop", "shoppingCart"})
 local v496 = v466:MakeTab({"Settings", "settings"})
 v484:AddDiscordInvite({
-    Name = "TikTok - ...",
+    Name = "Hphúc.",
     Description = "Link TikTok",
     Logo = "rbxassetid:// 127804177964032",
     Invite = "@phuc_2k13"
