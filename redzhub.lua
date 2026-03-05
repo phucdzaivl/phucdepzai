@@ -4079,7 +4079,7 @@ spawn(function()
         end
     end
 end)
-local _ = v485:AddSection({"TyrantoftheSkies"})
+local _ = v485:AddSection({"Tyrant of the Skies"})
 local v548 = v485:AddParagraph({Title = "Check Eyes Status", Content = "Loading..."})
 task.spawn(function()
     while task.wait(1) do
