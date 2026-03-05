@@ -4345,73 +4345,35 @@ v485:AddToggle({
     Name = "Farm Bone",
     Description = "Farm X\198\176\198\161ng",
     Default = false,
-    Callback = function(v591)
-        _G.FarmBone = v591
-        StopTween(_G.FarmBone)
-    end
-})
+    local BoneEnemies = {
+    ["Reborn Skeleton"] = {Level = 1975, Pos = Vector3.new(-9506, 172, 6017)},
+    ["Living Zombie"] = {Level = 2000, Pos = Vector3.new(-10150, 150, 5900)},
+    ["Demonic Soul"] = {Level = 2025, Pos = Vector3.new(-9500, 162, 5680)},
+    ["Posessed Mummy"] = {Level = 2050, Pos = Vector3.new(-10500, 162, 5680)}
+}
+
+_G.AutoFarmBone = true
+
 spawn(function()
-    while wait() do
-        local v592 = CFrame.new(-9508.5673828125, 142.1398468017578, 5737.3603515625)
-        do
-            local l_v592_0 = v592
-            if _G.FarmBone and World3 then
-                pcall(function()
-                    if not BypassTP then
-                        TP1(l_v592_0)
-                    elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - l_v592_0.Position).Magnitude > 2000 then
-                        TP1(l_v592_0)
-                        wait(0.1)
-                        for _ = 1, 8 do
-                            game.Players.localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(l_v592_0)
-                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
-                            wait(0.1)
-                        end
-                    elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - l_v592_0.Position).Magnitude < 2000 then
-                        TP1(l_v592_0)
-                    end
-                    if not game:GetService("Workspace").Enemies:FindFirstChild("Reborn Skeleton") and not game:GetService("Workspace").Enemies:FindFirstChild("Living Zombie") and not game:GetService("Workspace").Enemies:FindFirstChild("Demonic Soul") and not game:GetService("Workspace").Enemies:FindFirstChild("Posessed Mummy") then
-                        StartBring = false
-                        topos(CFrame.new(-9506.234375, 172.130615234375, 6117.0771484375))
-                        for _, v596 in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
-                            if v596.Name == "Reborn Skeleton" then
-                                topos(v596.HumanoidRootPart.CFrame * CFrame.new(2, 20, 2))
-                            elseif v596.Name ~= "Living Zombie" then
-                                if v596.Name ~= "Demonic Soul" then
-                                    if v596.Name == "Posessed Mummy" then
-                                        topos(v596.HumanoidRootPart.CFrame * CFrame.new(2, 20, 2))
-                                    end
-                                else
-                                    topos(v596.HumanoidRootPart.CFrame * CFrame.new(2, 20, 2))
-                                end
-                            else
-                                topos(v596.HumanoidRootPart.CFrame * CFrame.new(2, 20, 2))
-                            end
-                        end
+    while _G.AutoFarmBone do
+        wait()
+        pcall(function()
+            for Name, Data in pairs(BoneEnemies) do
+                if game:GetService("Players").LocalPlayer.Data.Level.Value >= Data.Level then
+                    local Monster = game:GetService("Workspace").Enemies:FindFirstChild(Name)
+                    if Monster and Monster:FindFirstChild("Humanoid") and Monster.Humanoid.Health > 0 then
+                        repeat
+                            wait()
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Monster.HumanoidRootPart.CFrame * CFrame.new(0, 7, 0)
+                            game:GetService("VirtualUser"):CaptureController()
+                            game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                        until not _G.AutoFarmBone or not Monster.Parent or Monster.Humanoid.Health <= 0
                     else
-                        for _, v598 in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                            if (v598.Name == "Reborn Skeleton" or v598.Name == "Living Zombie" or v598.Name == "Demonic Soul" or v598.Name == "Posessed Mummy") and v598:FindFirstChild("Humanoid") and v598:FindFirstChild("HumanoidRootPart") and v598.Humanoid.Health > 0 then
-                                repeat
-                                    task.wait()
-                                    AutoHaki()
-                                    NoAttackAnimation = true
-                                    NeedAttacking = true
-                                    EquipWeapon(_G.SelectWeapon)
-                                    v598.HumanoidRootPart.CanCollide = false
-                                    v598.Humanoid.WalkSpeed = 0
-                                    v598.Head.CanCollide = false
-                                    StartBring = true
-                                    MonFarm = v598.Name
-                                    PosMon = v598.HumanoidRootPart.CFrame
-                                    topos(v598.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
-                                    sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
-                                until not _G.FarmBone or not v598.Parent or v598.Humanoid.Health <= 0
-                            end
-                        end
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Data.Pos
                     end
-                end)
+                end
             end
-        end
+        end)
     end
 end)
 v485:AddToggle({
