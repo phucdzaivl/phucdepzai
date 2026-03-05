@@ -4344,53 +4344,76 @@ v485:AddToggle({
     Name = "Auto Farm Bone",
     Description = "Farm Xương",
     Default = false,
-    Callback = function(v591)
+     Callback = function(v591)
         _G.FarmBone = v591
-        StopTween(_G.FarmBone)
+        if not v591 then
+            StopTween(_G.FarmBone)
+        end
     end
 })
 
 spawn(function()
-    while wait() do
+    while task.wait() do
+        if _G.FarmBone then
+            pcall(function()
+                local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
+                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    for _, name in pairs(BoneEnemies) do
+                        if v.Name == name and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                            if PosMon then
+                                v.HumanoidRootPart.CFrame = PosMon
+                                v.HumanoidRootPart.CanCollide = false
+                                v.HumanoidRootPart.Size = Vector3.new(50, 50, 50)
+                                v.Humanoid.WalkSpeed = 0
+                                v.Humanoid:ChangeState(11) -- Khóa trạng thái để quái không văng ra
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait() do
         if _G.FarmBone then
             pcall(function()
                 local player = game.Players.LocalPlayer
                 local character = player.Character
-                if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+                local root = character:FindFirstChild("HumanoidRootPart")
+                if not root then return end
 
-                local targetPos = CFrame.new(-9508.5673828125, 142.1398468017578, 5737.3603515625)
                 local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
-                local monsterFound = false
+                local target = nil
 
-                for _, v598 in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    local isBoneMob = false
+                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     for _, name in pairs(BoneEnemies) do
-                        if v598.Name == name then isBoneMob = true break end
+                        if v.Name == name and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                            target = v
+                            break
+                        end
                     end
-
-                    if isBoneMob and v598:FindFirstChild("Humanoid") and v598:FindFirstChild("HumanoidRootPart") and v598.Humanoid.Health > 0 then
-                        monsterFound = true
-                        repeat
-                            task.wait()
-                            AutoHaki()
-                            EquipWeapon(_G.SelectWeapon)
-                            
-                            character.HumanoidRootPart.CFrame = v598.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0) * CFrame.Angles(math.rad(-90), 0, 0)
-                            
-                            game:GetService("VirtualUser"):CaptureController()
-                            game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                            
-                            v598.HumanoidRootPart.CanCollide = false
-                            v598.Humanoid.WalkSpeed = 0
-                            
-                            v598.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                        until not _G.FarmBone or not v598.Parent or v598.Humanoid.Health <= 0
-                        break 
-                    end
+                    if target then break end
                 end
 
-                if not monsterFound then
-                    topos(targetPos)
+                if target then
+                    PosMon = target.HumanoidRootPart.CFrame -- Gán vị trí cho hàm gom quái
+                    repeat
+                        task.wait()
+                        EquipWeapon(_G.SelectWeapon)
+                        AutoHaki()
+                        
+                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                        
+                        root.Velocity = Vector3.new(0, 0, 0)
+
+                        game:GetService("VirtualUser"):CaptureController()
+                        game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                    until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
+                    PosMon = nil
+                else
+                    topos(CFrame.new(-9508.56, 180, 5737.36))
                 end
             end)
         end
@@ -9558,4 +9581,3 @@ v496:AddButton({Title = "Server Hop", Callback = function()
     Hop()
 end})
 return
-
