@@ -4348,53 +4348,50 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Farm Bone (Pro Max)",
-    Description = "Farm hết bãi này qua bãi khác + Fast Attack",
+    Name = "Auto Farm Bone",
+    Description = "Tự động farm xương",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
         if not v591 then
             StopTween(_G.FarmBone)
+            PosMon = nil
         end
     end
 })
 
-local BoneSpots = {
-    CFrame.new(-9508.56, 175, 5737.36), -- Khu vực Skeleton
-    CFrame.new(-10150, 175, 5900),     -- Khu vực Zombie
-    CFrame.new(-9500, 175, 5680),      -- Khu vực Soul
-    CFrame.new(-10500, 175, 5680)      -- Khu vực Mummy
+local BoneZones = {
+    {Name = "Reborn Skeleton", Pos = CFrame.new(-9508, 172, 5737)},
+    {Name = "Living Zombie", Pos = CFrame.new(-10150, 172, 5900)},
+    {Name = "Demonic Soul", Pos = CFrame.new(-9500, 172, 5680)},
+    {Name = "Posessed Mummy", Pos = CFrame.new(-10500, 172, 5680)}
 }
-local currentSpot = 1
 
 local function FastAttack()
     pcall(function()
         local CombatFramework = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
         local CombatFrameworkLib = require(game:GetService("Resources").Lib.CombatFramework)
-        local CurrentCombat = CombatFramework.activeController
-        if CurrentCombat and CurrentCombat.equippedUnit then
-            for i = 1, 3 do -- Tăng số vòng lặp để đánh nhanh hơn
-                CombatFrameworkLib.attack(CurrentCombat.equippedUnit)
-            end
+        if CombatFramework.activeController and CombatFramework.activeController.equippedUnit then
+            CombatFrameworkLib.attack(CombatFramework.activeController.equippedUnit)
         end
     end)
 end
 
 spawn(function()
     while task.wait() do
-        if _G.FarmBone then
+        if _G.FarmBone and PosMon and MonFarm then
             pcall(function()
-                local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                 for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    for _, name in pairs(BoneEnemies) do
-                        if v.Name == name and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                            if PosMon then
-                                v.HumanoidRootPart.CFrame = PosMon
-                                v.HumanoidRootPart.CanCollide = false
-                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                v.Humanoid.WalkSpeed = 0
-                                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                    if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        if (v.HumanoidRootPart.Position - PosMon.Position).Magnitude <= 250 then
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.CFrame = PosMon
+                            v.Humanoid.WalkSpeed = 0
+                            if v.Humanoid:FindFirstChild("Animator") then
+                                v.Humanoid.Animator:Destroy()
                             end
+                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
                         end
                     end
                 end
@@ -4411,13 +4408,13 @@ spawn(function()
                 local root = player.Character:FindFirstChild("HumanoidRootPart")
                 if not root then return end
 
-                local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                 local target = nil
-
-                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    for _, name in pairs(BoneEnemies) do
-                        if v.Name == name and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                
+                for _, zone in pairs(BoneZones) do
+                    for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if v.Name == zone.Name and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
                             target = v
+                            MonFarm = v.Na
                             break
                         end
                     end
@@ -4434,16 +4431,19 @@ spawn(function()
                         root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                         root.Velocity = Vector3.new(0, 0, 0)
 
+                        FastAttack()
                         game:GetService("VirtualUser"):CaptureController()
                         game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                        FastAttack()
                         
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
                     PosMon = nil
                 else
-                    currentSpot = (currentSpot % #BoneSpots) + 1
-                    topos(BoneSpots[currentSpot])
-                    wait(1) 
+                    for _, zone in pairs(BoneZones) do
+                        if not target then
+                            topos(zone.Pos * CFrame.new(0, 20, 0))
+                            wait(0.5)
+                        end
+                    end
                 end
             end)
         end
