@@ -4458,7 +4458,7 @@ spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Trade Bone",
+    Name = " Auto Trade Bone",
     Description = "T\225\187\177 \196\145\225\187\153ng \196\145\225\187\149i x\198\176\198\161ng l\225\186\165y ph\225\186\167n th\198\176\225\187\159ng",
     Default = false,
     Callback = function(v602)
