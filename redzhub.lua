@@ -4045,13 +4045,13 @@ v485:AddToggle({
     Description = "\196\144\195\161nh H\225\186\163i T\225\186\183c Tr\195\170n Ph\195\161o \196\144\195\160i Bi\225\187\131n",
     Default = false,
     Callback = function(v543)
-        _G.AutoRaidPirate = v543
-        StopTween(_G.AutoRaidPirate)
+        _G.Auto Raid Pirate = v543
+        StopTween(_G.Auto Raid Pirate)
     end
 })
 spawn(function()
     while wait() do
-        if _G.AutoRaidPirate then
+        if _G.Auto Raid Pirate then
             pcall(function()
                 local v544 = CFrame.new(-5496.17432, 313.768921, -2841.53027, 0.924894512, 7.37058015E-9, 0.380223751, 3.5881019E-8, 1, -1.06665446E-7, -0.380223751, 1.12297109E-7, 0.924894512)
                 if (CFrame.new(-5539.3115234375, 313.800537109375, -2972.372314453125).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 500 then
