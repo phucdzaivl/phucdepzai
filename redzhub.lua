@@ -4366,9 +4366,10 @@ spawn(function()
             pcall(function()
                 for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        -- Giảm distToZone xuống 40 để cực kỳ chính xác bãi farm
                         local distToZone = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
                         
-                        if distToZone <= 80 then 
+                        if distToZone <= 40 then 
                             v.HumanoidRootPart.CanCollide = false
                             v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                             v.HumanoidRootPart.CFrame = PosMon
