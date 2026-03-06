@@ -4350,6 +4350,19 @@ end)
 _G.FarmBone = true 
 _G.FarmBone = true
 
+local function EquipWeapon(weapon)
+    if game.Players.LocalPlayer.Backpack:FindFirstChild(weapon) then
+        local tool = game.Players.LocalPlayer.Backpack:FindFirstChild(weapon)
+        game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
+    end
+end
+
+local function AutoHaki()
+    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
+    end
+end
+
 v485:AddToggle({
     Name = "Auto Farm Bone",
     Default = true,
@@ -4362,10 +4375,12 @@ spawn(function()
     while task.wait() do
         if _G.FarmBone then
             pcall(function()
-                local root = game.Players.LocalPlayer.Character.HumanoidRootPart
+                local player = game.Players.LocalPlayer
+                local root = player.Character.HumanoidRootPart
+                
                 local target = nil
                 for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if (enemy.Name == "Reborn Skeleton" or enemy.Name == "Living Zombie" or enemy.Name == "Demonic Soul" or enemy.Name == "Posessed Mummy") and enemy.Humanoid.Health > 0 then
+                    if (enemy.Name == "Reborn Skeleton" or enemy.Name == "Living Zombie" or enemy.Name == "Demonic Soul" or enemy.Name == "Posessed Mummy") and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
                         target = enemy
                         break
                     end
