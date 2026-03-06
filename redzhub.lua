@@ -4455,20 +4455,22 @@ spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Get Quest & Farm",
-    Description = "Nhận nhiệm vụ farm quái Bone",
+    Name = "Auto Get Quest & Farm Bone",
+    Description = "Tự bay về NPC nhận quest rồi mới farm",
     Default = false,
     Callback = function(v)
-        _G.AutoGetQuestFarm = v
+        _G.FarmBone = v
         if not v then
             PosMon = nil
             MonFarm = nil
             pcall(function()
-                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v:FindFirstChild("HumanoidRootPart") then
-                        v.HumanoidRootPart.CanCollide = true
-                        v.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
-                        v.Humanoid.WalkSpeed = 16
+                for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if enemy:FindFirstChild("HumanoidRootPart") then
+                        enemy.HumanoidRootPart.CanCollide = true
+                        enemy.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+                        if enemy:FindFirstChild("Humanoid") then
+                            enemy.Humanoid.WalkSpeed = 16
+                        end
                     end
                 end
             end)
@@ -4478,17 +4480,15 @@ v485:AddToggle({
 
 spawn(function()
     while task.wait() do
-        if _G.AutoGetQuestFarm and PosMon and MonFarm then
+        if _G.FarmBone and PosMon and MonFarm then
             pcall(function()
                 for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                        local distToZone = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
-                        if distToZone <= 30 then 
+                        if (v.HumanoidRootPart.Position - PosMon.Position).Magnitude <= 30 then 
                             v.HumanoidRootPart.CanCollide = false
                             v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                             v.HumanoidRootPart.CFrame = PosMon
                             v.Humanoid.WalkSpeed = 0
-                            if v.Humanoid:FindFirstChild("Animator") then v.Humanoid.Animator:Destroy() end
                             sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
                         end
                     end
@@ -4498,10 +4498,9 @@ spawn(function()
     end
 end)
 
-
 spawn(function()
     while task.wait() do
-        if _G.AutoGetQuestFarm then
+        if _G.FarmBone then
             pcall(function()
                 local player = game.Players.LocalPlayer
                 local root = player.Character:FindFirstChild("HumanoidRootPart")
@@ -4514,10 +4513,10 @@ spawn(function()
                     if distToNPC > 15 then
                         local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distToNPC/300, Enum.EasingStyle.Linear), {CFrame = NPC_Pos})
                         tween:Play()
-                        repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.AutoGetQuestFarm
+                        repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone
                     end
                     
-                    if _G.AutoGetQuestFarm and (root.Position - NPC_Pos.Position).Magnitude <= 20 then
+                    if _G.FarmBone and (root.Position - NPC_Pos.Position).Magnitude <= 20 then
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HallowQuest1", 1)
                         wait(1)
                     end
@@ -4526,16 +4525,12 @@ spawn(function()
                     local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                     local target = nil
 
-                    -- Tìm quái theo nhiệm vụ
                     for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        for _, name in pairs(BoneEnemies) do
-                            if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-                                target = enemy
-                                MonFarm = enemy.Name
-                                break
-                            end
+                        if table.find(BoneEnemies, enemy.Name) and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+                            target = enemy
+                            MonFarm = enemy.Name
+                            break
                         end
-                        if target then break end
                     end
 
                     if target then
@@ -4545,7 +4540,7 @@ spawn(function()
                             local distToMon = (targetPos.Position - root.Position).Magnitude
                             local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distToMon/300, Enum.EasingStyle.Linear), {CFrame = targetPos})
                             tween:Play()
-                            repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.AutoGetQuestFarm or target.Humanoid.Health <= 0
+                            repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone
                         end
 
                         PosMon = target.HumanoidRootPart.CFrame
@@ -4556,7 +4551,7 @@ spawn(function()
                             root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                             root.Velocity = Vector3.new(0, 0, 0)
                             game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                        until not _G.AutoGetQuestFarm or not target.Parent or target.Humanoid.Health <= 0 or player.Data.QuestValue.Value == ""
+                        until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0 or player.Data.QuestValue.Value == ""
                         PosMon = nil
                     else
                         root.CFrame = CFrame.new(-9508.56, 200, 5737.36)
