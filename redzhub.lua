@@ -4365,48 +4365,58 @@ end
 
 v485:AddToggle({
     Name = "Auto Farm Bone",
-    Default = true,
+    Default = false,
     Callback = function(v)
         _G.FarmBone = v
-    end
-})
+        if v then
+            spawn(function()
+                while _G.FarmBone do
+                    task.wait()
+                    pcall(function()
+                        local root = game.Players.LocalPlayer.Character.HumanoidRootPart
+                        local HauntedCastlePos = CFrame.new(-9508.56, 172.36, 5732.36)
+                        
+                        if (root.Position - HauntedCastlePos.Position).Magnitude > 500 then
+                            local dist = (HauntedCastlePos.Position - root.Position).Magnitude
+                            game:GetService("TweenService"):Create(root, TweenInfo.new(dist/300, Enum.EasingStyle.Linear), {CFrame = HauntedCastlePos * CFrame.new(0, 150, 0)}):Play()
+                            repeat task.wait() until (root.Position - HauntedCastlePos.Position).Magnitude < 100 or not _G.FarmBone
+                        end
 
-spawn(function()
-    while task.wait() do
-        if _G.FarmBone then
-            pcall(function()
-                local player = game.Players.LocalPlayer
-                local root = player.Character.HumanoidRootPart
-                
-                local target = nil
-                for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if (enemy.Name == "Reborn Skeleton" or enemy.Name == "Living Zombie" or enemy.Name == "Demonic Soul" or enemy.Name == "Posessed Mummy") and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-                        target = enemy
-                        break
-                    end
-                end
-                
-                if target then
-                    local dist = (root.Position - target.HumanoidRootPart.Position).Magnitude
-                    if dist > 15 then
-                        local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(dist/300, Enum.EasingStyle.Linear), {CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)})
-                        tween:Play()
-                        repeat task.wait() until (root.Position - target.HumanoidRootPart.Position).Magnitude < 15 or not _G.FarmBone
-                    end
-                    
-                    repeat
-                        task.wait()
-                        EquipWeapon(_G.SelectWeapon)
-                        AutoHaki()
-                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0) * CFrame.Angles(math.rad(-90), 0, 0)
-                        root.Velocity = Vector3.new(0, 0, 0)
-                        game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                    until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
+                        local target = nil
+                        for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                            if (enemy.Name == "Reborn Skeleton" or enemy.Name == "Living Zombie" or enemy.Name == "Demonic Soul" or enemy.Name == "Posessed Mummy") and enemy.Humanoid.Health > 0 then
+                                target = enemy
+                                break
+                            end
+                        end
+
+                        if target then
+                            local dist = (root.Position - target.HumanoidRootPart.Position).Magnitude
+                            if dist > 15 then
+                                game:GetService("TweenService"):Create(root, TweenInfo.new(dist/300, Enum.EasingStyle.Linear), {CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)}):Play()
+                                repeat task.wait() until (root.Position - target.HumanoidRootPart.Position).Magnitude < 15 or not _G.FarmBone
+                            end
+
+                            repeat
+                                task.wait()
+                                if game.Players.LocalPlayer.Backpack:FindFirstChild(_G.SelectWeapon) then
+                                    game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack[_G.SelectWeapon])
+                                end
+                                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
+                                end
+                                
+                                root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                                root.Velocity = Vector3.new(0, 0, 0)
+                                game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                            until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
+                        end
+                    end)
                 end
             end)
         end
     end
-end)
+})
 v485:AddToggle({
     Name = "Seperator Hallow Scythe",
     Description = "Tri\225\187\135u h\225\187\147i v\195\160 ti\195\170u di\225\187\135t Soul Reaper",
