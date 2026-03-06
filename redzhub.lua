@@ -4348,13 +4348,12 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Farm Bone ",
-    Description = "Tự Động Farm Xương",
+    Name = "Auto Farm Bone",
+    Description = "Tự động Farm Xương",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
         if not v591 then
-            StopTween(_G.FarmBone)
             PosMon = nil
         end
     end
@@ -4367,15 +4366,12 @@ spawn(function()
                 for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
                         local dist = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
-                        
-                        if dist <= 150 then 
+                        if dist <= 150 then
                             v.HumanoidRootPart.CanCollide = false
                             v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                             v.HumanoidRootPart.CFrame = PosMon
                             v.Humanoid.WalkSpeed = 0
-                            if v.Humanoid:FindFirstChild("Animator") then
-                                v.Humanoid.Animator:Destroy()
-                            end
+                            if v.Humanoid:FindFirstChild("Animator") then v.Humanoid.Animator:Destroy() end
                             sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
                         end
                     end
@@ -4408,6 +4404,10 @@ spawn(function()
                 end
 
                 if target then
+                    if (target.HumanoidRootPart.Position - root.Position).Magnitude > 50 then
+                        TweenPos(target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0))
+                    end
+
                     PosMon = target.HumanoidRootPart.CFrame
                     repeat
                         task.wait()
@@ -4417,15 +4417,12 @@ spawn(function()
                         root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                         root.Velocity = Vector3.new(0, 0, 0)
 
-                        -- Tấn công
                         game:GetService("VirtualUser"):CaptureController()
                         game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                        
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
                     PosMon = nil
                 else
-
-                    topos(CFrame.new(-9508.56, 180, 5737.36)) 
+                    TweenPos(CFrame.new(-9508.56, 180, 5737.36))
                 end
             end)
         end
