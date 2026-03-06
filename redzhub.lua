@@ -4349,7 +4349,7 @@ task.spawn(function()
 end)
 v485:AddToggle({
     Name = "Auto Farm Bone",
-    Description = "Tự động Farm Xương",
+    Description = " Tự ĐộngFarm Xương ",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
@@ -4362,23 +4362,55 @@ v485:AddToggle({
 
 spawn(function()
     while task.wait() do
-        if _G.FarmBone and PosMon then
+        if _G.FarmBone then
             pcall(function()
-                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                        local dist = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
-                        
-                        if dist <= 150 then 
-                            v.HumanoidRootPart.CanCollide = false
-                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v.HumanoidRootPart.CFrame = PosMon
-                            v.Humanoid.WalkSpeed = 0
-                            if v.Humanoid:FindFirstChild("Animator") then
-                                v.Humanoid.Animator:Destroy()
-                            end
-                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                local player = game.Players.LocalPlayer
+                local character = player.Character
+                local root = character:FindFirstChild("HumanoidRootPart")
+                if not root then return end
+
+                local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
+                local target = nil
+
+                for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    for _, name in pairs(BoneEnemies) do
+                        if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+                            target = enemy
+                            MonFarm = enemy.Name                             break
                         end
                     end
+                    if target then break end
+                end
+
+                if target then
+                    if game:GetService("Players").LocalPlayer.Data.QuestValue.Value == "" then
+                        local qName, qLevel = "", 0
+                        if target.Name == "Reborn Skeleton" then qName, qLevel = "HallowQuest1", 1
+                        elseif target.Name == "Living Zombie" then qName, qLevel = "HallowQuest1", 2
+                        elseif target.Name == "Demonic Soul" then qName, qLevel = "HallowQuest2", 1
+                        elseif target.Name == "Posessed Mummy" then qName, qLevel = "HallowQuest2", 2
+                        end
+                        
+                        if qName ~= "" then
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", qName, qLevel)
+                        end
+                    end
+
+                    PosMon = target.HumanoidRootPart.CFrame
+                    repeat
+                        task.wait()
+                        EquipWeapon(_G.SelectWeapon) 
+                        AutoHaki()
+                        
+                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                        root.Velocity = Vector3.new(0, 0, 0)
+
+                        game:GetService("VirtualUser"):CaptureController()
+                        game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                    until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
+                    PosMon = nil
+                else
+                    topos(CFrame.new(-9508.56, 180, 5737.36))
                 end
             end)
         end
@@ -4387,51 +4419,24 @@ end)
 
 spawn(function()
     while task.wait() do
-        if _G.FarmBone then
+        if _G.FarmBone and PosMon and MonFarm then
             pcall(function()
-                local player = game.Players.LocalPlayer
-                local root = player.Character:FindFirstChild("HumanoidRootPart")
-                if not root then return end
-
-                local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
-                local target = nil
-
-                -- Tìm quái
-                for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    for _, name in pairs(BoneEnemies) do
-                        if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-                            target = enemy
-                            MonFarm = enemy.Name 
-                            break
+                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        if (v.HumanoidRootPart.Position - PosMon.Position).Magnitude <= 150 then
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.CFrame = PosMon
+                            v.Humanoid.WalkSpeed = 0
+                            if v.Humanoid:FindFirstChild("Animator") then v.Humanoid.Animator:Destroy() end
+                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
                         end
                     end
-                    if target then break end
-                end
-
-                if target then
-                    PosMon = target.HumanoidRootPart.CFrame
-                    repeat
-                        task.wait()
-                        EquipWeapon(_G.SelectWeapon)
-                        AutoHaki()
-                        
-                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
-                        root.Velocity = Vector3.new(0, 0, 0)
-
-                        game:GetService("VirtualUser"):CaptureController()
-                        game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                        
-                    until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
-                    PosMon = nil
-                else
-
-                    topos(CFrame.new(-9508.56, 180, 5737.36)) 
                 end
             end)
         end
     end
-end)
-v485:AddToggle({
+end)v485:AddToggle({
     Name = "Seperator Hallow Scythe",
     Description = "Tri\225\187\135u h\225\187\147i v\195\160 ti\195\170u di\225\187\135t Soul Reaper",
     Default = false,
