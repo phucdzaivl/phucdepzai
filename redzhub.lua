@@ -4455,8 +4455,8 @@ spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Get Quest",
-    Description = "Tự động nhận nhiệm vụ Farm Bone",
+    Name = "Auto Get Quest ",
+    Description = "Tự động nhận nhiệm vụ farm bone",
     Default = false,
     Callback = function(v)
         _G.AutoGetQuest = v
@@ -4464,45 +4464,40 @@ v485:AddToggle({
 })
 
 spawn(function()
-    while task.wait(0.5) do
+    while task.wait(1) do
         if _G.AutoGetQuest then
             pcall(function()
-                if game:GetService("Players").LocalPlayer.Data.QuestValue.Value == "" then
-                    local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
-                    local CurrentMon = ""
-                    local MyPos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+                local player = game:GetService("Players").LocalPlayer
+                local character = player.Character
+                
+                if player.Data.QuestValue.Value == "" then
+                    -- Tọa độ NPC Skeleton Lord tại Hallow Castle
+                    local NPC_Pos = CFrame.new(-9440, 15, 5740) 
+                    local root = character:FindFirstChild("HumanoidRootPart")
                     
-                    for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        if table.find(BoneEnemies, v.Name) and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                            if (v.HumanoidRootPart.Position - MyPos).Magnitude <= 500 then
-                                CurrentMon = v.Name
-                                break
+                    if root then
+                        local distToNPC = (root.Position - NPC_Pos.Position).Magnitude
+                        
+                        if distToNPC > 15 then
+                            local speed = 300
+                            local tweenInfo = TweenInfo.new(distToNPC / speed, Enum.EasingStyle.Linear)
+                            local tween = game:GetService("TweenService"):Create(root, tweenInfo, {CFrame = NPC_Pos})
+                            
+                            tween:Play()
+                            repeat 
+                                task.wait()
+                                root.Velocity = Vector3.new(0, 0, 0)
+                            until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.AutoGetQuest
+                            
+                            if not _G.AutoGetQuest then 
+                                tween:Cancel() 
                             end
                         end
-                    end
-
-                    if CurrentMon == "" then
-                        for _, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
-                            if table.find(BoneEnemies, v.Name) then
-                                -- Quét sơ bộ bãi gần nhất dựa trên tọa độ cố định
-                                if (MyPos - Vector3.new(-9508, 172, 5737)).Magnitude <= 300 then CurrentMon = "Reborn Skeleton"
-                                elseif (MyPos - Vector3.new(-10150, 172, 5900)).Magnitude <= 300 then CurrentMon = "Living Zombie"
-                                elseif (MyPos - Vector3.new(-9500, 172, 5680)).Magnitude <= 300 then CurrentMon = "Demonic Soul"
-                                elseif (MyPos - Vector3.new(-10500, 172, 5680)).Magnitude <= 300 then CurrentMon = "Posessed Mummy"
-                                end
-                            end
+                        
+                        if _G.AutoGetQuest and (root.Position - NPC_Pos.Position).Magnitude <= 20 then
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HallowQuest1", 1)
+                            wait(1) 
                         end
-                    end
-
-                    local qName, qLevel = "", 0
-                    if CurrentMon == "Reborn Skeleton" then qName, qLevel = "HallowQuest1", 1
-                    elseif CurrentMon == "Living Zombie" then qName, qLevel = "HallowQuest1", 2
-                    elseif CurrentMon == "Demonic Soul" then qName, qLevel = "HallowQuest2", 1
-                    elseif CurrentMon == "Posessed Mummy" then qName, qLevel = "HallowQuest2", 2
-                    end
-                    
-                    if qName ~= "" then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", qName, qLevel)
                     end
                 end
             end)
