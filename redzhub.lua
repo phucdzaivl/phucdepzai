@@ -3663,7 +3663,7 @@ function CheckItemBPCRBPCR(v463)
     end
 end
 local v466 = loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-NejiDepzai/UIRedzhub/refs/heads/main/UIRedz.lua"))():MakeWindow({
-    Title = "Phucdzai Hub",
+    Title = "Phucdzai Hub (BETA )",
     SubTitle = "by Phuc Ngo",
     SaveFolder = "BloxFruits.lua"
 })
@@ -3762,7 +3762,7 @@ v484:AddDiscordInvite({
 v484:AddDiscordInvite({
     Name = " Hack Và Anh Em Xã Đoàn 🤞🙌",
     Description = "Tham gia discord của tôi để nhận them thông báo",
-    Logo = "rbxassetid:// 101400411067843",
+    Logo = "rbxassetid://101400411067843",
     Invite = " https://discord.gg/PMNdT8MV" 
 
 })local _ = v485:AddSection({"Select Melee,Sword,Gun,Fruit"})
@@ -4348,7 +4348,7 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Farm Bone",
+    Name = "Auto Farm Bone (BETA)",
     Description = "Tự động Farm Xương",
     Default = false,
     Callback = function(v591)
@@ -4872,7 +4872,7 @@ spawn(function()
         end
     end
 end)
-local _ = v485:AddSection({"Boss Fram"})
+local _ = v485:AddSection({"Boss Farm"})
 v485:AddButton({
     Name = "C\225\186\173p Nh\225\186\173t Boss",
     Description = "L\195\160m m\225\187\155i danh s\195\161ch boss",
