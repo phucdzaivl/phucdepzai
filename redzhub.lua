@@ -9231,6 +9231,28 @@ function InMyNetWork(v1168)
         return isnetworkowner(v1168)
     end
 end
+_G.AutoHaki = true
+
+v496:AddToggle({
+    Name = "Auto Haki",
+    Description = "Tự động kích hoạt Haki",
+    Default = true,
+    Callback = function(v)
+        _G.AutoHaki = v
+    end
+})
+
+spawn(function()
+    while task.wait(1) do
+        if _G.AutoHaki then
+            pcall(function()
+                if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
+                end
+            end)
+        end
+    end
+end)
 v496:AddToggle({
     Name = "Auto M1 Fruit",
     Description = "Tự động đánh M1 Trái ác quỷ",
