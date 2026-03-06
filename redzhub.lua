@@ -4348,8 +4348,8 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Farm Bone",
-    Description = "Tự động Farm Xương",
+    Name = "Auto Farm Bone ",
+    Description = "Tự Động Farm Xương",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
@@ -4400,7 +4400,7 @@ spawn(function()
                     for _, name in pairs(BoneEnemies) do
                         if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
                             target = enemy
-                            MonFarm = enemy.Name 
+                            MonFarm = enemy.Name
                             break
                         end
                     end
@@ -4417,6 +4417,7 @@ spawn(function()
                         root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                         root.Velocity = Vector3.new(0, 0, 0)
 
+                        -- Tấn công
                         game:GetService("VirtualUser"):CaptureController()
                         game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
                         
