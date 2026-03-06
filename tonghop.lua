@@ -1,6 +1,5 @@
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
--- [KHỞI TẠO NÚT BẤM NỔI]
 local lar1 = Instance.new("ScreenGui")
 local lar2 = Instance.new("ImageButton")
 local lar3 = Instance.new("UICorner")
