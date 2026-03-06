@@ -4368,44 +4368,40 @@ v485:AddToggle({
     Default = false,
     Callback = function(v)
         _G.FarmBone = v
-        if v then
-            spawn(function()
-                while _G.FarmBone do
-                    task.wait(0.1)
-                    if game.PlaceId == 7449423635 then 
-                        local MyQuest = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest
-                        if not MyQuest.Visible then
-                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest1", 1) -- Nhiệm vụ Skeleton
-                        end
-
-                        local Enemy = nil
-                        for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                            if (v.Name == "Reborn Skeleton" or v.Name == "Living Zombie") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                                Enemy = v
+        spawn(function()
+            while _G.FarmBone do
+                task.wait(0.1)
+                pcall(function()
+                    if not game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then
+                        for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                            if tool:IsA("Tool") and (tool.ToolTip == "Melee" or tool.ToolTip == "Sword") then
+                                game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
                                 break
                             end
                         end
-
-                        if Enemy then
-                            repeat
-                                if not _G.FarmBone then break end
-                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Enemy.HumanoidRootPart.CFrame * CFrame.new(0, 7, 0)
-                                
-                                game:GetService("VirtualUser"):CaptureController()
-                                game:GetService("VirtualUser"):ClickButton1(Vector2.new(851, 158))
-                                task.wait()
-                            until not Enemy.Parent or Enemy.Humanoid.Health <= 0 or not _G.FarmBone
-                        else
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9515, 164, 5786) 
-                        end
-                    else
-                        print("Lỗi: Bạn phải ở Sea 3 (Haunted Castle) mới farm được Bone!")
-                        _G.FarmBone = false
-                        break
                     end
-                end
-            end)
-        end
+
+                    local Target = nil
+                    for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if (enemy.Name == "Reborn Skeleton" or enemy.Name == "Living Zombie") 
+                        and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+                            Target = enemy
+                            break
+                        end
+                    end
+
+                    if Target then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Target.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+                        
+                        local VirtualUser = game:GetService("VirtualUser")
+                        VirtualUser:CaptureController()
+                        VirtualUser:Button1Down(Vector2.new(1280, 672))
+                    else
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9515, 164, 5786)
+                    end
+                end)
+            end
+        end)
     end
 })
 v485:AddToggle({
