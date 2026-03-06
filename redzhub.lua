@@ -4455,49 +4455,111 @@ spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Get Quest ",
-    Description = "Tự động nhận nhiệm vụ farm bone",
+    Name = "Auto Get Quest & Farm",
+    Description = "Nhận nhiệm vụ farm quái Bone",
     Default = false,
     Callback = function(v)
-        _G.AutoGetQuest = v
+        _G.AutoGetQuestFarm = v
+        if not v then
+            PosMon = nil
+            MonFarm = nil
+            pcall(function()
+                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v:FindFirstChild("HumanoidRootPart") then
+                        v.HumanoidRootPart.CanCollide = true
+                        v.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+                        v.Humanoid.WalkSpeed = 16
+                    end
+                end
+            end)
+        end
     end
 })
 
 spawn(function()
-    while task.wait(1) do
-        if _G.AutoGetQuest then
+    while task.wait() do
+        if _G.AutoGetQuestFarm and PosMon and MonFarm then
             pcall(function()
-                local player = game:GetService("Players").LocalPlayer
-                local character = player.Character
-                
+                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        local distToZone = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
+                        if distToZone <= 30 then 
+                            v.HumanoidRootPart.CanCollide = false
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.CFrame = PosMon
+                            v.Humanoid.WalkSpeed = 0
+                            if v.Humanoid:FindFirstChild("Animator") then v.Humanoid.Animator:Destroy() end
+                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+
+spawn(function()
+    while task.wait() do
+        if _G.AutoGetQuestFarm then
+            pcall(function()
+                local player = game.Players.LocalPlayer
+                local root = player.Character:FindFirstChild("HumanoidRootPart")
+                if not root then return end
+
                 if player.Data.QuestValue.Value == "" then
-                    -- Tọa độ NPC Skeleton Lord tại Hallow Castle
-                    local NPC_Pos = CFrame.new(-9440, 15, 5740) 
-                    local root = character:FindFirstChild("HumanoidRootPart")
+                    local NPC_Pos = CFrame.new(-9440, 15, 5740) -- Tọa độ NPC Skeleton Lord
+                    local distToNPC = (root.Position - NPC_Pos.Position).Magnitude
                     
-                    if root then
-                        local distToNPC = (root.Position - NPC_Pos.Position).Magnitude
-                        
-                        if distToNPC > 15 then
-                            local speed = 300
-                            local tweenInfo = TweenInfo.new(distToNPC / speed, Enum.EasingStyle.Linear)
-                            local tween = game:GetService("TweenService"):Create(root, tweenInfo, {CFrame = NPC_Pos})
-                            
-                            tween:Play()
-                            repeat 
-                                task.wait()
-                                root.Velocity = Vector3.new(0, 0, 0)
-                            until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.AutoGetQuest
-                            
-                            if not _G.AutoGetQuest then 
-                                tween:Cancel() 
+                    if distToNPC > 15 then
+                        local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distToNPC/300, Enum.EasingStyle.Linear), {CFrame = NPC_Pos})
+                        tween:Play()
+                        repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.AutoGetQuestFarm
+                    end
+                    
+                    if _G.AutoGetQuestFarm and (root.Position - NPC_Pos.Position).Magnitude <= 20 then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HallowQuest1", 1)
+                        wait(1)
+                    end
+                
+                else
+                    local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
+                    local target = nil
+
+                    -- Tìm quái theo nhiệm vụ
+                    for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        for _, name in pairs(BoneEnemies) do
+                            if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+                                target = enemy
+                                MonFarm = enemy.Name
+                                break
                             end
                         end
+                        if target then break end
+                    end
+
+                    if target then
+                        local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0)
                         
-                        if _G.AutoGetQuest and (root.Position - NPC_Pos.Position).Magnitude <= 20 then
-                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HallowQuest1", 1)
-                            wait(1) 
+                        if (targetPos.Position - root.Position).Magnitude > 25 then
+                            local distToMon = (targetPos.Position - root.Position).Magnitude
+                            local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distToMon/300, Enum.EasingStyle.Linear), {CFrame = targetPos})
+                            tween:Play()
+                            repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.AutoGetQuestFarm or target.Humanoid.Health <= 0
                         end
+
+                        PosMon = target.HumanoidRootPart.CFrame
+                        repeat
+                            task.wait()
+                            EquipWeapon(_G.SelectWeapon)
+                            AutoHaki()
+                            root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                            root.Velocity = Vector3.new(0, 0, 0)
+                            game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                        until not _G.AutoGetQuestFarm or not target.Parent or target.Humanoid.Health <= 0 or player.Data.QuestValue.Value == ""
+                        PosMon = nil
+                    else
+                        root.CFrame = CFrame.new(-9508.56, 200, 5737.36)
                     end
                 end
             end)
