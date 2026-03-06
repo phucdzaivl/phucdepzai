@@ -4365,6 +4365,7 @@ end
 
 v485:AddToggle({
     Name = "Auto Farm Bone",
+    Description = "Tự động Farm Bone",
     Default = false,
     Callback = function(v)
         _G.FarmBone = v
@@ -4379,31 +4380,43 @@ spawn(function()
     while wait() do
         if _G.FarmBone then
             pcall(function()
+                local MyQuest = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest
+                if not MyQuest.Visible then
+                    -- Tự động chọn Quest dựa trên Level tại Haunted Castle
+                    local MyLevel = game.Players.LocalPlayer.Data.Level.Value
+                    if MyLevel >= 1975 then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1) -- Living Zombie
+                    else
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest1", 1) -- Reborn Skeleton
+                    end
+                end
+
                 for _, v522 in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if (v522.Name == "Reborn Skeleton" or v522.Name == "Living Zombie" or v522.Name == "Demonic Soul" or v522.Name == "Posessed Mummy") 
+                    -- Chỉ nhắm mục tiêu quái tại đảo Bone
+                    if (v522.Name == "Reborn Skeleton" or v522.Name == "Living Zombie") 
                     and v522:FindFirstChild("Humanoid") 
                     and v522:FindFirstChild("HumanoidRootPart") 
-                    and v522.Humanoid.Health > 0 
-                    and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v522.HumanoidRootPart.Position).Magnitude <= 5000 then
+                    and v522.Humanoid.Health > 0 then
                         
                         repeat
-                            wait(_G.Fast_Delay or 0.1) -- Đảm bảo không bị lag nếu Fast_Delay chưa set
+                            if not _G.FarmBone then break end
+                            wait(_G.Fast_Delay or 0.1)
+                            
                             StartBring = true
                             AutoHaki()
                             EquipWeapon(_G.SelectWeapon)
                             
-                            topos(v522.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                            topos(v522.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0))
                             
                             v522.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v522.HumanoidRootPart.Transparency = 1
-                            v522.Humanoid.JumpPower = 0
-                            v522.Humanoid.WalkSpeed = 0
                             v522.HumanoidRootPart.CanCollide = false
+                            v522.Humanoid.WalkSpeed = 0
                             
                             FarmPos = v522.HumanoidRootPart.CFrame
                             MonFarm = v522.Name
                             
-game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                            game:GetService("VirtualUser"):CaptureController()
+                            game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
                             
                         until not _G.FarmBone or not v522.Parent or v522.Humanoid.Health <= 0
                         
