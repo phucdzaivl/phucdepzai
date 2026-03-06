@@ -4368,42 +4368,52 @@ v485:AddToggle({
     Default = false,
     Callback = function(v)
         _G.FarmBone = v
-        spawn(function()
-            while _G.FarmBone do
-                task.wait(0.1)
-                pcall(function()
-                    if not game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then
-                        for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-                            if tool:IsA("Tool") and (tool.ToolTip == "Melee" or tool.ToolTip == "Sword") then
-                                game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
-                                break
-                            end
-                        end
-                    end
-
-                    local Target = nil
-                    for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        if (enemy.Name == "Reborn Skeleton" or enemy.Name == "Living Zombie") 
-                        and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-                            Target = enemy
-                            break
-                        end
-                    end
-
-                    if Target then
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Target.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
-                        
-                        local VirtualUser = game:GetService("VirtualUser")
-                        VirtualUser:CaptureController()
-                        VirtualUser:Button1Down(Vector2.new(1280, 672))
-                    else
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9515, 164, 5786)
-                    end
-                end)
-            end
-        end)
+        if not v then
+            StopTween(_G.FarmBone)
+            StartBring = false
+        end
     end
 })
+
+spawn(function()
+    while wait() do
+        if _G.FarmBone then
+            pcall(function()
+                for _, v522 in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if (v522.Name == "Reborn Skeleton" or v522.Name == "Living Zombie" or v522.Name == "Demonic Soul" or v522.Name == "Posessed Mummy") 
+                    and v522:FindFirstChild("Humanoid") 
+                    and v522:FindFirstChild("HumanoidRootPart") 
+                    and v522.Humanoid.Health > 0 
+                    and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v522.HumanoidRootPart.Position).Magnitude <= 5000 then
+                        
+                        repeat
+                            wait(_G.Fast_Delay or 0.1) -- Đảm bảo không bị lag nếu Fast_Delay chưa set
+                            StartBring = true
+                            AutoHaki()
+                            EquipWeapon(_G.SelectWeapon)
+                            
+                            topos(v522.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                            
+                            v522.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v522.HumanoidRootPart.Transparency = 1
+                            v522.Humanoid.JumpPower = 0
+                            v522.Humanoid.WalkSpeed = 0
+                            v522.HumanoidRootPart.CanCollide = false
+                            
+                            FarmPos = v522.HumanoidRootPart.CFrame
+                            MonFarm = v522.Name
+                            
+game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                            
+                        until not _G.FarmBone or not v522.Parent or v522.Humanoid.Health <= 0
+                        
+                        StartBring = false
+                    end
+                end
+            end)
+        end
+    end
+end)
 v485:AddToggle({
     Name = "Seperator Hallow Scythe",
     Description = "Tri\225\187\135u h\225\187\147i v\195\160 ti\195\170u di\225\187\135t Soul Reaper",
