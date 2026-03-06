@@ -4348,25 +4348,27 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Farm Bone ",
+    Name = "Auto Farm Bone",
     Description = "Tự động Farm Xương",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
         if not v591 then
             PosMon = nil
+            MonFarm = nil
         end
     end
 })
 
 spawn(function()
     while task.wait() do
-        if _G.FarmBone and PosMon then
+        if _G.FarmBone and PosMon and MonFarm then
             pcall(function()
                 for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                        local dist = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
-                        if dist <= 150 then
+                        local distToZone = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
+                        
+                        if distToZone <= 80 then 
                             v.HumanoidRootPart.CanCollide = false
                             v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                             v.HumanoidRootPart.CFrame = PosMon
@@ -4407,7 +4409,7 @@ spawn(function()
                     local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0)
                     local distance = (targetPos.Position - root.Position).Magnitude
                     
-                    if distance > 20 then
+                    if distance > 25 then
                         local speed = 300
                         local tweenInfo = TweenInfo.new(distance / speed, Enum.EasingStyle.Linear)
                         local tween = game:GetService("TweenService"):Create(root, tweenInfo, {CFrame = targetPos})
@@ -4415,12 +4417,13 @@ spawn(function()
                         tween:Play()
                         repeat 
                             task.wait() 
-                            root.Velocity = Vector3.new(0, 0, 0) -- Chống rơi
+                            root.Velocity = Vector3.new(0, 0, 0)
                         until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone or (target.Humanoid.Health <= 0)
                         tween:Cancel()
                     end
 
                     PosMon = target.HumanoidRootPart.CFrame
+                    
                     repeat
                         task.wait()
                         EquipWeapon(_G.SelectWeapon)
@@ -4432,7 +4435,8 @@ spawn(function()
                         game:GetService("VirtualUser"):CaptureController()
                         game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
-                    PosMon = nil
+                    
+                    PosMon = nil 
                 else
                     root.CFrame = CFrame.new(-9508.56, 180, 5737.36)
                 end
