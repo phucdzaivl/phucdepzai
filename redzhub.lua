@@ -4376,7 +4376,7 @@ spawn(function()
                     for _, name in pairs(BoneEnemies) do
                         if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
                             target = enemy
-                            MonFarm = enemy.Name                             break
+                            MonFarm = enemy.Name     
                         end
                     end
                     if target then break end
