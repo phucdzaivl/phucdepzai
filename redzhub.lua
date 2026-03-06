@@ -4505,17 +4505,27 @@ spawn(function()
                 local root = player.Character:FindFirstChild("HumanoidRootPart")
                 if not root then return end
 
-                if player.Data.QuestValue.Value == "" then
+                local hasQuest = false
+                pcall(function()
+                    if player.PlayerGui.Main.Quest.Visible then
+                        hasQuest = true
+                    end
+                end)
+
+                if not hasQuest then
                     local NPC_Pos = CFrame.new(-9440, 15, 5740)
                     local distToNPC = (root.Position - NPC_Pos.Position).Magnitude
                     
-                    if distToNPC > 10 then
+                    if distToNPC > 5 then
                         local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distToNPC/300, Enum.EasingStyle.Linear), {CFrame = NPC_Pos})
                         tween:Play()
                         repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone
-                    else
+                    end
+                    
+                    if _G.FarmBone then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "BonesQuest", 1)
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HallowQuest1", 1)
-                        task.wait(0.5)
+                        task.wait(1)
                     end
                 else
                     local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
@@ -4536,7 +4546,7 @@ spawn(function()
                             local distToMon = (targetPos.Position - root.Position).Magnitude
                             local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distToMon/300, Enum.EasingStyle.Linear), {CFrame = targetPos})
                             tween:Play()
-                            repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone
+                            repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone or target.Humanoid.Health <= 0
                         end
 
                         PosMon = target.HumanoidRootPart.CFrame
@@ -4547,7 +4557,13 @@ spawn(function()
                             root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                             root.Velocity = Vector3.new(0, 0, 0)
                             game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                        until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0 or player.Data.QuestValue.Value == ""
+                            
+                            pcall(function()
+                                if not player.PlayerGui.Main.Quest.Visible then
+                                    hasQuest = false
+                                end
+                            end)
+                        until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0 or not hasQuest
                         PosMon = nil
                     else
                         root.CFrame = CFrame.new(-9508.56, 200, 5737.36)
