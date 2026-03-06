@@ -1,8 +1,6 @@
 hookfunction(require(game:GetService("ReplicatedStorage").Effect.Container.Death), function()
-    -- empty block
 end)
 hookfunction(require(game:GetService("ReplicatedStorage").Effect.Container.Respawn), function()
-    -- empty block
 end)
 if game.PlaceId == 2753915549 then
     World1 = true
