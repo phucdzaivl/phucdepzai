@@ -4368,7 +4368,7 @@ spawn(function()
                     if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
                         local dist = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
                         
-                        if dist <= 150
+                        if dist <= 150 then 
                             v.HumanoidRootPart.CanCollide = false
                             v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                             v.HumanoidRootPart.CFrame = PosMon
@@ -4396,11 +4396,12 @@ spawn(function()
                 local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                 local target = nil
 
+                -- Tìm quái
                 for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     for _, name in pairs(BoneEnemies) do
                         if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
                             target = enemy
-                            MonFarm = enemy.Name
+                            MonFarm = enemy.Name 
                             break
                         end
                     end
@@ -4423,6 +4424,7 @@ spawn(function()
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
                     PosMon = nil
                 else
+
                     topos(CFrame.new(-9508.56, 180, 5737.36)) 
                 end
             end)
