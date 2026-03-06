@@ -4446,6 +4446,55 @@ spawn(function()
     end
 end)
 v485:AddToggle({
+    Name = "Auto Get Quest",
+    Description = "Tự động nhận nhiệm vụ Farm Bone",
+    Default = false,
+    Callback = function(v)
+        _G.AutoGetQuest = v
+    end
+})
+
+spawn(function()
+    while task.wait() do
+        if _G.AutoGetQuest then
+            pcall(function()
+                if game:GetService("Players").LocalPlayer.Data.QuestValue.Value == "" then
+                    local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
+                    local CurrentMon = ""
+                    
+quest
+                    for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        for _, name in pairs(BoneEnemies) do
+                            if v.Name == name and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                                if (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 350 then
+                                    CurrentMon = v.Name
+                                    break
+                                end
+                            end
+                        end
+                        if CurrentMon ~= "" then break end
+                    end
+
+                    local qName, qLevel = "", 0
+                    if CurrentMon == "Reborn Skeleton" then 
+                        qName, qLevel = "HallowQuest1", 1
+                    elseif CurrentMon == "Living Zombie" then 
+                        qName, qLevel = "HallowQuest1", 2
+                    elseif CurrentMon == "Demonic Soul" then 
+                        qName, qLevel = "HallowQuest2", 1
+                    elseif CurrentMon == "Posessed Mummy" then 
+                        qName, qLevel = "HallowQuest2", 2
+                    end
+                    
+                    if qName ~= "" then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", qName, qLevel)
+                    end
+                end
+            end)
+        end
+    end
+end)
+v485:AddToggle({
     Name = "Seperator Hallow Scythe",
     Description = "Tri\225\187\135u h\225\187\147i v\195\160 ti\195\170u di\225\187\135t Soul Reaper",
     Default = false,
