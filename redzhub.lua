@@ -4360,39 +4360,13 @@ v485:AddToggle({
                 for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     if v:FindFirstChild("HumanoidRootPart") then
                         v.HumanoidRootPart.CanCollide = true
-                        v.HumanoidRootPart.Size = Vector3.new(2, 2, 1) -- Kích thước mặc định
-                        if v.Humanoid.WalkSpeed == 0 then
-                            v.Humanoid.WalkSpeed = 16 -- Tốc độ mặc định
-                        end
+                        v.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
                     end
                 end
             end)
         end
     end
 })
-
-spawn(function()
-    while task.wait() do
-        if _G.FarmBone and PosMon and MonFarm then
-            pcall(function()
-                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                        local distToZone = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
-                        
-                        if distToZone <= 30 then 
-                            v.HumanoidRootPart.CanCollide = false
-                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v.HumanoidRootPart.CFrame = PosMon
-                            v.Humanoid.WalkSpeed = 0
-                            if v.Humanoid:FindFirstChild("Animator") then v.Humanoid.Animator:Destroy() end
-                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
 
 spawn(function()
     while task.wait() do
@@ -4406,24 +4380,20 @@ spawn(function()
                 local target = nil
 
                 for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    for _, name in pairs(BoneEnemies) do
-                        if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-                            target = enemy
-                            MonFarm = enemy.Name
-                            break
-                        end
+                    if table.find(BoneEnemies, enemy.Name) and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+                        target = enemy
+                        MonFarm = enemy.Name
+                        break
                     end
-                    if target then break end
                 end
 
                 if target then
-                    local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0)
-                    local distance = (targetPos.Position - root.Position).Magnitude
+                    local farmCFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 14, 0)
+                    local distance = (farmCFrame.Position - root.Position).Magnitude
                     
-                    if distance > 25 then
+                    if distance > 15 then
                         local speed = 300
-                        local tweenInfo = TweenInfo.new(distance / speed, Enum.EasingStyle.Linear)
-                        local tween = game:GetService("TweenService"):Create(root, tweenInfo, {CFrame = targetPos})
+                        local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distance / speed, Enum.EasingStyle.Linear), {CFrame = farmCFrame})
                         tween:Play()
                         repeat 
                             task.wait() 
@@ -4432,23 +4402,19 @@ spawn(function()
                         tween:Cancel()
                     end
 
-                    PosMon = target.HumanoidRootPart.CFrame
-                    
                     repeat
                         task.wait()
                         EquipWeapon(_G.SelectWeapon)
                         AutoHaki()
                         
-                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 14, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                         root.Velocity = Vector3.new(0, 0, 0)
 
                         game:GetService("VirtualUser"):CaptureController()
                         game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
-                    
-                    PosMon = nil 
                 else
-                    root.CFrame = CFrame.new(-9508.56, 200, 5737.36)
+                    root.CFrame = CFrame.new(-9508.56, 170, 5737.36)
                 end
             end)
         end
