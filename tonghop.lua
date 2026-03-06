@@ -8,7 +8,7 @@ lar1.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 lar2.Parent = lar1
 lar2.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 lar2.Position = UDim2.new(0.1, 0, 0.16, 0)
-lar2.Size = UDim2.new(0, 50, 0, 50)
+lar2.Size = UDim2.new(0, 60, 0, 60)
 lar2.Draggable = true
 lar2.Image = "rbxassetid://89841242357091"
 lar3.CornerRadius = UDim.new(1, 0)
@@ -17,10 +17,9 @@ lar2.MouseButton1Click:Connect(function()
     game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.End, false, game)
 end)
 
--- [KHỞI TẠO WINDOW]
 local Window = Fluent:CreateWindow({
     Title = "Phucdzai Hub",
-    SubTitle = "Tổng Hợp Version 10 Tabs (Clean)",
+    SubTitle = "Tổng Hợp",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,
@@ -28,7 +27,6 @@ local Window = Fluent:CreateWindow({
     MinimizeKey = Enum.KeyCode.End
 })
 
--- [KHỞI TẠO 10 TABS]
 local Tabs = {
     Main = Window:AddTab({ Title = "Thông Tin", Icon = "info" }),
     Setting = Window:AddTab({ Title = "Cài Đặt", Icon = "settings" }),
@@ -67,17 +65,18 @@ Tabs.BloxFruits:AddButton({
     Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))() end
 })
 
--- 6. TAB FARM CHEST
 Tabs.FarmChest:AddButton({
     Title = "Trong Nguyen Farm Chest",
     Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/trongdeptraihucscript/Main/refs/heads/main/TN-Tp-Chest.lua"))() end
 })
 
--- 7. TAB HOP SERVER
 Tabs.ServerHop:AddButton({
-    Title = "Trẩu Roblox Hop",
-    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/trungdao2k4/buffalo/refs/heads/main/hopless.lua"))() end
+    Title = "Vision X",
+    Callback = function() 
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/xSync-gg/VisionX/refs/heads/main/Server_Finder.lua"))() 
+   end
 })
+
 
 Tabs.ServerVip:AddButton({
     Title = "Anura Hub",
@@ -89,12 +88,6 @@ Tabs.Utility:AddButton({
     Title = "Fly GUI V3",
     Callback = function() 
         loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))() 
-    end
-})
-Tabs.Utility:AddButton({
-    Title = "Vision X",
-    Callback = function() 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/xSync-gg/VisionX/refs/heads/main/Server_Finder.lua"))() 
     end
 })
 
