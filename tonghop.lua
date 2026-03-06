@@ -83,7 +83,7 @@ Tabs.ServerHop:AddButton({
 })
 
 Tabs.ServerVip:AddButton({
-    Title = "Anura Hub (Vip Server)",
+    Title = "Anura Hub",
     Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/anuragaming1/Meow_gaming/refs/heads/main/Servervip.lua.txt"))() end
 })
 
@@ -103,7 +103,6 @@ spawn(function()
         task.wait()
         if _G.AutoFarm then
             pcall(function()
-                -- Click chuột
                 game:GetService("VirtualUser"):CaptureController()
                 game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
                 
