@@ -4347,55 +4347,85 @@ task.spawn(function()
         end)
     end
 end)
+_G.FarmBone = true 
+_G.FarmBone = true
+
 v485:AddToggle({
     Name = "Auto Farm Bone",
-    Default = false,
+    Default = true,
     Callback = function(v)
         _G.FarmBone = v
-        _G.BringMonster = false
-        _G.BringMob = false
     end
 })
+
+function SmoothFly(TargetCFrame)
+    local player = game.Players.LocalPlayer
+    local root = player.Character:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+    
+    local distance = (TargetCFrame.Position - root.Position).Magnitude
+    
+    if distance > 5 then
+        local speed = 300
+        local tweenInfo = TweenInfo.new(distance / speed, Enum.EasingStyle.Linear)
+        local tween = game:GetService("TweenService"):Create(root, tweenInfo, {CFrame = TargetCFrame})
+        
+        tween:Play()
+        
+        while tween.PlaybackState == Enum.PlaybackState.Playing and _G.FarmBone do
+            task.wait()
+            root.Velocity = Vector3.new(0, 0, 0) -- Giữ ổn định khi đang bay
+        end
+        tween:Cancel()
+    else
+        root.CFrame = TargetCFrame
+    end
+end
 
 spawn(function()
     while task.wait() do
         if _G.FarmBone then
             pcall(function()
                 local player = game.Players.LocalPlayer
-                local root = player.Character.HumanoidRootPart
-                
+                local character = player.Character
+                local root = character:FindFirstChild("HumanoidRootPart")
+                if not root then return end
+
                 local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                 local target = nil
 
                 for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     if table.find(BoneEnemies, enemy.Name) and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-                        if enemy:FindFirstChild("HumanoidRootPart") then
-                            enemy.HumanoidRootPart.CanCollide = true -- Cho phép va chạm để không bị xuyên sàn
-                            enemy.HumanoidRootPart.Size = Vector3.new(2, 2, 2) -- Reset kích thước nhỏ lại
-                            enemy.Humanoid.WalkSpeed = 16 -- Tốc độ mặc định
-                        end
                         target = enemy
                         break
                     end
                 end
 
                 if target and target:FindFirstChild("HumanoidRootPart") then
+                    local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 14, 0)
+                    
+                    if (root.Position - target.HumanoidRootPart.Position).Magnitude > 15 then
+                        SmoothFly(targetPos)
+                    end
+
                     repeat
                         task.wait()
-                        if not _G.FarmBone then break end
-                        
-                        AutoHaki()
                         EquipWeapon(_G.SelectWeapon)
+                        AutoHaki()
 
                         root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 14, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                         root.Velocity = Vector3.new(0, 0, 0)
 
+                        -- Đánh
                         game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                        
-                        target.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
                 else
-                    root.CFrame = CFrame.new(-9508.56, 180, 5737.36)
+                    local islandPos = CFrame.new(-9508.56, 180, 5737.36)
+                    if (root.Position - islandPos.Position).Magnitude > 20 then
+                        SmoothFly(islandPos)
+                    else
+                        root.CFrame = islandPos
+                    end
                 end
             end)
         end
