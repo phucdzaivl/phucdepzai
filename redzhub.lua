@@ -4349,7 +4349,7 @@ task.spawn(function()
 end)
 v485:AddToggle({
     Name = "Auto Farm Bone",
-    Description = "Tự động Farm Bone",
+    Description = "Tự động Farm Xương",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
@@ -4368,7 +4368,7 @@ spawn(function()
                     if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
                         local distToZone = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
                         
-                        if distToZone <= 30 then 
+                        if distToZone <= 40 then 
                             v.HumanoidRootPart.CanCollide = false
                             v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                             v.HumanoidRootPart.CFrame = PosMon
@@ -4406,13 +4406,14 @@ spawn(function()
                 end
 
                 if target then
-                    local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0)
+                    local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0)
                     local distance = (targetPos.Position - root.Position).Magnitude
                     
                     if distance > 25 then
                         local speed = 300
                         local tweenInfo = TweenInfo.new(distance / speed, Enum.EasingStyle.Linear)
                         local tween = game:GetService("TweenService"):Create(root, tweenInfo, {CFrame = targetPos})
+                        
                         tween:Play()
                         repeat 
                             task.wait() 
@@ -4428,7 +4429,7 @@ spawn(function()
                         EquipWeapon(_G.SelectWeapon)
                         AutoHaki()
                         
-                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                         root.Velocity = Vector3.new(0, 0, 0)
 
                         game:GetService("VirtualUser"):CaptureController()
@@ -4437,7 +4438,56 @@ spawn(function()
                     
                     PosMon = nil 
                 else
-                    root.CFrame = CFrame.new(-9508.56, 200, 5737.36)
+                    root.CFrame = CFrame.new(-9508.56, 180, 5737.36)
+                end
+            end)
+        end
+    end
+end)
+v485:AddToggle({
+    Name = "Auto Get Quest",
+    Description = "Tự động nhận nhiệm vụ Farm",
+    Default = false,
+    Callback = function(v)
+        _G.AutoGetQuest = v
+    end
+})
+
+spawn(function()
+    while task.wait() do
+        if _G.AutoGetQuest then
+            pcall(function()
+                if game:GetService("Players").LocalPlayer.Data.QuestValue.Value == "" then
+                    local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
+                    local CurrentMon = ""
+                    
+quest
+                    for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        for _, name in pairs(BoneEnemies) do
+                            if v.Name == name and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                                if (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 350 then
+                                    CurrentMon = v.Name
+                                    break
+                                end
+                            end
+                        end
+                        if CurrentMon ~= "" then break end
+                    end
+
+                    local qName, qLevel = "", 0
+                    if CurrentMon == "Reborn Skeleton" then 
+                        qName, qLevel = "HallowQuest1", 1
+                    elseif CurrentMon == "Living Zombie" then 
+                        qName, qLevel = "HallowQuest1", 2
+                    elseif CurrentMon == "Demonic Soul" then 
+                        qName, qLevel = "HallowQuest2", 1
+                    elseif CurrentMon == "Posessed Mummy" then 
+                        qName, qLevel = "HallowQuest2", 2
+                    end
+                    
+                    if qName ~= "" then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", qName, qLevel)
+                    end
                 end
             end)
         end
