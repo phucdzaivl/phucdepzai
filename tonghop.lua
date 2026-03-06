@@ -3,23 +3,18 @@ local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/
 local lar1 = Instance.new("ScreenGui")
 local lar2 = Instance.new("ImageButton")
 local lar3 = Instance.new("UICorner")
-
 lar1.Parent = game.CoreGui
 lar1.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
 lar2.Parent = lar1
 lar2.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 lar2.Position = UDim2.new(0.1, 0, 0.16, 0)
 lar2.Size = UDim2.new(0, 45, 0, 45)
 lar2.Draggable = true
 lar2.Image = "rbxassetid://89841242357091"
-
 lar3.CornerRadius = UDim.new(1, 0)
 lar3.Parent = lar2
-
 lar2.MouseButton1Click:Connect(function()
-    local vim = game:GetService("VirtualInputManager")
-    vim:SendKeyEvent(true, Enum.KeyCode.End, false, game)
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.End, false, game)
 end)
 
 local Window = Fluent:CreateWindow({
@@ -32,51 +27,84 @@ local Window = Fluent:CreateWindow({
     MinimizeKey = Enum.KeyCode.End
 })
 
+-- [KHỞI TẠO 10 TABS]
 local Tabs = {
     Main = Window:AddTab({ Title = "Thông Tin", Icon = "info" }),
-    Scripts = Window:AddTab({ Title = "Blox Fruits", Icon = "code" }),
-    Utility = Window:AddTab({ Title = "Cài Đặt", Icon = "settings" }),
-    Server = Window:AddTab({ Title = "Server/Hop", Icon = "refresh-cw" })
+    Setting = Window:AddTab({ Title = "Cài Đặt", Icon = "settings" }),
+    BloxFruits = Window:AddTab({ Title = "Blox Fruits", Icon = "swords" }),
+    BringMob = Window:AddTab({ Title = "Bring Mob", Icon = "box" }),
+    AutoClick = Window:AddTab({ Title = "Auto Click", Icon = "mouse-pointer-2" }),
+    FarmChest = Window:AddTab({ Title = "Farm Chest", Icon = "archive" }),
+    ServerHop = Window:AddTab({ Title = "Hop Server", Icon = "refresh-cw" }),
+    ServerVip = Window:AddTab({ Title = "Server 1 Người", Icon = "user" }),
+    Utility = Window:AddTab({ Title = "Linh Tinh", Icon = "component" }),
+    FixLag = Window:AddTab({ Title = "Fix Lag/Fly", Icon = "zap" })
 }
 
--- Tab Thông Tin
 Tabs.Main:AddButton({
     Title = "Copy Discord",
     Description = "Hack và anh em xã đoàn",
     Callback = function()
         setclipboard("https://discord.gg/At95G4vB")
-        Fluent:Notify({ Title = "Thành công", Content = "Đã copy link Discord!" })
+        Fluent:Notify({ Title = "Hệ thống", Content = "Đã copy link Discord!" })
     end
 })
 
-Tabs.Scripts:AddButton({
+local MainToggle = Tabs.Setting:AddToggle("MainFarm", {Title = "Bật Tất Cả Hỗ Trợ", Default = false})
+MainToggle:OnChanged(function() _G.AutoFarm = MainToggle.Value end)
+
+Tabs.BloxFruits:AddButton({
     Title = "Blue X Hub",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-BlueX/BlueX-Hub/refs/heads/main/Main.lua"))()
-    end
+    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-BlueX/BlueX-Hub/refs/heads/main/Main.lua"))() end
 })
-
-Tabs.Scripts:AddButton({
+Tabs.BloxFruits:AddButton({
     Title = "Quantum Onyx",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))()
+    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))() end
+})
+
+Tabs.BringMob:AddParagraph({Title = "Hướng dẫn", Content = "Khi bật 'Hỗ trợ farm' ở tab Cài Đặt, quái sẽ tự gom lại."})
+
+Tabs.AutoClick:AddParagraph({Title = "Trạng thái", Content = "Tự động click chuột trái khi bật Farm."})
+
+Tabs.FarmChest:AddButton({
+    Title = "Trong Nguyen Farm Chest",
+    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/trongdeptraihucscript/Main/refs/heads/main/TN-Tp-Chest.lua"))() end
+})
+
+Tabs.ServerHop:AddButton({
+    Title = "Trẩu Roblox Hop",
+    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/trungdao2k4/buffalo/refs/heads/main/hopless.lua"))() end
+})
+
+Tabs.ServerVip:AddButton({
+    Title = "Anura Hub (Vip Server)",
+    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/anuragaming1/Meow_gaming/refs/heads/main/Servervip.lua.txt"))() end
+})
+
+Tabs.Utility:AddButton({
+    Title = "Xeter Hub V4",
+    Callback = function() 
+        getgenv().Version = "V4"
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/TlDinhKhoi/Xeter/refs/heads/main/Main.lua"))() 
     end
 })
 
-local AutoFarmToggle = Tabs.Utility:AddToggle("AutoFarm", {Title = "Bật Hỗ Trợ Farm", Default = false})
-
-AutoFarmToggle:OnChanged(function()
-    _G.AutoFarm = AutoFarmToggle.Value
-end)
+Tabs.FixLag:AddButton({
+    Title = "Turbo Lite (Fix Lag)",
+    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua"))() end
+})
+Tabs.FixLag:AddButton({
+    Title = "Fly GUI V3",
+    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))() end
+})
 
 spawn(function()
     while true do
-        wait()
+        task.wait()
         if _G.AutoFarm then
             pcall(function()
-                local vu = game:GetService("VirtualUser")
-                vu:CaptureController()
-                vu:Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                game:GetService("VirtualUser"):CaptureController()
+                game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
                 
                 for _, v in pairs(game.Workspace.Enemies:GetChildren()) do
                     if v:FindFirstChild("HumanoidRootPart") and (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < 500 then
@@ -88,12 +116,5 @@ spawn(function()
         end
     end
 end)
-
-Tabs.Server:AddButton({
-    Title = "Server Hop (Trẩu Roblox)",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/trungdao2k4/buffalo/refs/heads/main/hopless.lua"))()
-    end
-})
 
 Window:SelectTab(1)
