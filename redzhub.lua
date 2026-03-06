@@ -4348,8 +4348,8 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Farm Bone",
-    Description = "Tự động Farm Xương",
+    Name = "Auto Farm Bone ",
+    Description = "Tự động Farm Bone",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
