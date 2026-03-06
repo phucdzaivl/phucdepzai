@@ -4396,7 +4396,6 @@ spawn(function()
                 local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                 local target = nil
 
-                -- Tìm quái
                 for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                     for _, name in pairs(BoneEnemies) do
                         if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
