@@ -4348,14 +4348,25 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Farm Bone ",
-    Description = "Tự động Farm Bone",
+    Name = "Auto Farm Bone",
+    Description = "Tự động Farm Xương",
     Default = false,
     Callback = function(v591)
         _G.FarmBone = v591
         if not v591 then
-            PosMon = nil
-            MonFarm = nil
+            pcall(function()
+                PosMon = nil
+                MonFarm = nil
+                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v:FindFirstChild("HumanoidRootPart") then
+                        v.HumanoidRootPart.CanCollide = true
+                        v.HumanoidRootPart.Size = Vector3.new(2, 2, 1) -- Kích thước mặc định
+                        if v.Humanoid.WalkSpeed == 0 then
+                            v.Humanoid.WalkSpeed = 16 -- Tốc độ mặc định
+                        end
+                    end
+                end
+            end)
         end
     end
 })
@@ -4368,7 +4379,7 @@ spawn(function()
                     if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
                         local distToZone = (v.HumanoidRootPart.Position - PosMon.Position).Magnitude
                         
-                        if distToZone <= 40 then 
+                        if distToZone <= 30 then 
                             v.HumanoidRootPart.CanCollide = false
                             v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                             v.HumanoidRootPart.CFrame = PosMon
@@ -4406,14 +4417,13 @@ spawn(function()
                 end
 
                 if target then
-                    local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0)
+                    local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0)
                     local distance = (targetPos.Position - root.Position).Magnitude
                     
                     if distance > 25 then
                         local speed = 300
                         local tweenInfo = TweenInfo.new(distance / speed, Enum.EasingStyle.Linear)
                         local tween = game:GetService("TweenService"):Create(root, tweenInfo, {CFrame = targetPos})
-                        
                         tween:Play()
                         repeat 
                             task.wait() 
@@ -4429,7 +4439,7 @@ spawn(function()
                         EquipWeapon(_G.SelectWeapon)
                         AutoHaki()
                         
-                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                        root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                         root.Velocity = Vector3.new(0, 0, 0)
 
                         game:GetService("VirtualUser"):CaptureController()
@@ -4438,7 +4448,7 @@ spawn(function()
                     
                     PosMon = nil 
                 else
-                    root.CFrame = CFrame.new(-9508.56, 180, 5737.36)
+                    root.CFrame = CFrame.new(-9508.56, 200, 5737.36)
                 end
             end)
         end
