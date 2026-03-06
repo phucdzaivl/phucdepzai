@@ -4400,7 +4400,7 @@ spawn(function()
                     for _, name in pairs(BoneEnemies) do
                         if enemy.Name == name and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
                             target = enemy
-                            MonFarm = enemy.Name -- Khóa tên quái để chỉ gom quái bãi này
+                            MonFarm = enemy.Name
                             break
                         end
                     end
