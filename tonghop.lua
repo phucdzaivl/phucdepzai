@@ -62,6 +62,12 @@ Tabs.BloxFruits:AddButton({
     Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))() end
 })
 
+Tabs.BloxFruits:AddButton({
+   getgenv().Version = "V4"
+getgenv().Team = "Marines"
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TlDinhKhoi/Xeter/refs/heads/main/Main.lua"))() end
+})
+
 Tabs.BringMob:AddParagraph({Title = "Hướng dẫn", Content = "Khi bật 'Hỗ trợ farm' ở tab Cài Đặt, quái sẽ tự gom lại."})
 
 Tabs.AutoClick:AddParagraph({Title = "Trạng thái", Content = "Tự động click chuột trái khi bật Farm."})
@@ -82,10 +88,8 @@ Tabs.ServerVip:AddButton({
 })
 
 Tabs.Utility:AddButton({
-    Title = "Xeter Hub V4",
-    Callback = function() 
-        getgenv().Version = "V4"
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/TlDinhKhoi/Xeter/refs/heads/main/Main.lua"))() 
+Title = "Fly GUI V3",
+    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
     end
 })
 
@@ -93,16 +97,13 @@ Tabs.FixLag:AddButton({
     Title = "Turbo Lite (Fix Lag)",
     Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua"))() end
 })
-Tabs.FixLag:AddButton({
-    Title = "Fly GUI V3",
-    Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))() end
-})
 
 spawn(function()
     while true do
         task.wait()
         if _G.AutoFarm then
             pcall(function()
+                -- Click chuột
                 game:GetService("VirtualUser"):CaptureController()
                 game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
                 
