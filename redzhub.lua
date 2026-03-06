@@ -4348,7 +4348,7 @@ task.spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Farm Bone",
+    Name = "Auto Farm Bone ",
     Description = "Tự động Farm Xương",
     Default = false,
     Callback = function(v591)
@@ -4404,8 +4404,20 @@ spawn(function()
                 end
 
                 if target then
-                    if (target.HumanoidRootPart.Position - root.Position).Magnitude > 50 then
-                        TweenPos(target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0))
+                    local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0)
+                    local distance = (targetPos.Position - root.Position).Magnitude
+                    
+                    if distance > 20 then
+                        local speed = 300
+                        local tweenInfo = TweenInfo.new(distance / speed, Enum.EasingStyle.Linear)
+                        local tween = game:GetService("TweenService"):Create(root, tweenInfo, {CFrame = targetPos})
+                        
+                        tween:Play()
+                        repeat 
+                            task.wait() 
+                            root.Velocity = Vector3.new(0, 0, 0) -- Chống rơi
+                        until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone or (target.Humanoid.Health <= 0)
+                        tween:Cancel()
                     end
 
                     PosMon = target.HumanoidRootPart.CFrame
@@ -4422,7 +4434,7 @@ spawn(function()
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
                     PosMon = nil
                 else
-                    TweenPos(CFrame.new(-9508.56, 180, 5737.36))
+                    root.CFrame = CFrame.new(-9508.56, 180, 5737.36)
                 end
             end)
         end
