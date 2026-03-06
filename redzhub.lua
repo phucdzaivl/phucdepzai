@@ -4347,25 +4347,15 @@ task.spawn(function()
         end)
     end
 end)
+_G.BringMonster = false 
+
 v485:AddToggle({
-    Name = "Auto Farm Bone",
-    Description = "Tự động Farm Xương",
+    Name = "Auto Farm Bone ",
     Default = false,
     Callback = function(v)
         _G.FarmBone = v
-        if not v then
-            pcall(function()
-                game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
-            end)
-        end
     end
 })
-
-function AutoHaki()
-    if _G.AutoHaki and not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
-    end
-end
 
 spawn(function()
     while task.wait() do
@@ -4374,9 +4364,8 @@ spawn(function()
                 local player = game.Players.LocalPlayer
                 local character = player.Character
                 local root = character:FindFirstChild("HumanoidRootPart")
-                local hum = character:FindFirstChild("Humanoid")
                 
-                if not root or not hum or hum.Health <= 0 then return end
+                if not root or not character:FindFirstChild("Humanoid") or character.Humanoid.Health <= 0 then return end
 
                 local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                 local target = nil
@@ -4389,18 +4378,6 @@ spawn(function()
                 end
 
                 if target and target:FindFirstChild("HumanoidRootPart") then
-                    local farmCFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 14, 0)
-                    
-                    if (root.Position - target.HumanoidRootPart.Position).Magnitude > 15 then
-                        local distance = (farmCFrame.Position - root.Position).Magnitude
-                        local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distance/300, Enum.EasingStyle.Linear), {CFrame = farmCFrame})
-                        tween:Play()
-                        
-                        repeat task.wait() 
-                            root.Velocity = Vector3.new(0,0,0)
-                        until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone or target.Humanoid.Health <= 0
-                    end
-
                     repeat
                         task.wait()
                         AutoHaki()
@@ -4415,7 +4392,7 @@ spawn(function()
                         
                     until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0
                 else
-                    root.CFrame = CFrame.new(-9508.56, 185, 5737.36)
+                    root.CFrame = CFrame.new(-9508, 180, 5737)
                     root.Velocity = Vector3.new(0, 0, 0)
                 end
             end)
