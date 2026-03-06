@@ -4455,118 +4455,66 @@ spawn(function()
     end
 end)
 v485:AddToggle({
-    Name = "Auto Get Quest & Farm Bone",
+    Name = "Auto Farm Bone & Get Quest",
+    Description = "Tự động nhận nhiệm vụ và farm Bone",
     Default = false,
     Callback = function(v)
-        _G.FarmBone = v
-        if not v then
-            PosMon = nil
-            MonFarm = nil
-            pcall(function()
-                for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if enemy:FindFirstChild("HumanoidRootPart") then
-                        enemy.HumanoidRootPart.CanCollide = true
-                        enemy.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
-                        if enemy:FindFirstChild("Humanoid") then
-                            enemy.Humanoid.WalkSpeed = 16
-                        end
-                    end
-                end
-            end)
-        end
+        _G.AutoFarmBone = v
+        StopTween(_G.AutoFarmBone)
     end
 })
 
-spawn(function()
+task.spawn(function()
     while task.wait() do
-        if _G.FarmBone and PosMon and MonFarm then
-            pcall(function()
-                for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                    if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                        if (v.HumanoidRootPart.Position - PosMon.Position).Magnitude <= 30 then 
-                            v.HumanoidRootPart.CanCollide = false
-                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v.HumanoidRootPart.CFrame = PosMon
-                            v.Humanoid.WalkSpeed = 0
-                            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
-
-spawn(function()
-    while task.wait() do
-        if _G.FarmBone then
+        if _G.AutoFarmBone then
             pcall(function()
                 local player = game.Players.LocalPlayer
-                local root = player.Character:FindFirstChild("HumanoidRootPart")
-                if not root then return end
-
-                local hasQuest = false
-                pcall(function()
-                    if player.PlayerGui.Main.Quest.Visible then
-                        hasQuest = true
-                    end
-                end)
-
-                if not hasQuest then
-                    local NPC_Pos = CFrame.new(-9440, 15, 5740)
-                    local distToNPC = (root.Position - NPC_Pos.Position).Magnitude
-                    
-                    if distToNPC > 5 then
-                        local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distToNPC/300, Enum.EasingStyle.Linear), {CFrame = NPC_Pos})
-                        tween:Play()
-                        repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone
-                    end
-                    
-                    if _G.FarmBone then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "BonesQuest", 1)
+                local character = player.Character
+                local root = character:FindFirstChild("HumanoidRootPart")
+                
+                if player.Data.QuestValue.Value == "" then
+                    local NPC_Pos = CFrame.new(-9440.56, 15.68, 5733.02)
+                    topos(NPC_Pos)
+                    if (root.Position - NPC_Pos.Position).Magnitude < 15 then
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HallowQuest1", 1)
-                        task.wait(1)
+                        task.wait(0.5)
                     end
                 else
                     local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                     local target = nil
-
-                    for _, enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                        if table.find(BoneEnemies, enemy.Name) and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-                            target = enemy
-                            MonFarm = enemy.Name
+                    
+                    for _, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if table.find(BoneEnemies, v.Name) and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                            target = v
                             break
                         end
                     end
-
+                    
                     if target then
-                        local targetPos = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0)
-                        
-                        if (targetPos.Position - root.Position).Magnitude > 25 then
-                            local distToMon = (targetPos.Position - root.Position).Magnitude
-                            local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distToMon/300, Enum.EasingStyle.Linear), {CFrame = targetPos})
-                            tween:Play()
-                            repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone or target.Humanoid.Health <= 0
-                        end
-
-                        PosMon = target.HumanoidRootPart.CFrame
                         repeat
                             task.wait()
-                            EquipWeapon(_G.SelectWeapon)
                             AutoHaki()
-                            root.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 18, 0) * CFrame.Angles(math.rad(-90), 0, 0)
-                            root.Velocity = Vector3.new(0, 0, 0)
-                            game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                            EquipWeapon(_G.SelectWeapon)
                             
-                            pcall(function()
-                                if not player.PlayerGui.Main.Quest.Visible then
-                                    hasQuest = false
-                                end
-                            end)
-                        until not _G.FarmBone or not target.Parent or target.Humanoid.Health <= 0 or not hasQuest
+                            target.HumanoidRootPart.CanCollide = false
+                            target.Humanoid.WalkSpeed = 0
+                            target.HumanoidRootPart.Size = Vector3.new(50, 50, 50)
+                            
+                            PosMon = target.HumanoidRootPart.CFrame
+                            MonFarm = target.Name
+                            NeedAttacking = true
+                            
+                            topos(target.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                            
+                            if typeof(Bring) == "function" then
+                                Bring(target.Name, target.HumanoidRootPart.CFrame)
+                            end
+                            
+                        until not _G.AutoFarmBone or not target.Parent or target.Humanoid.Health <= 0 or player.Data.QuestValue.Value == ""
+                        NeedAttacking = false
                         PosMon = nil
                     else
-                        root.CFrame = CFrame.new(-9508.56, 200, 5737.36)
+                        topos(CFrame.new(-9508, 172, 5737))
                     end
                 end
             end)
