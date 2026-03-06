@@ -4456,7 +4456,6 @@ spawn(function()
 end)
 v485:AddToggle({
     Name = "Auto Get Quest & Farm Bone",
-    Description = "Tự bay về NPC nhận quest rồi mới farm",
     Default = false,
     Callback = function(v)
         _G.FarmBone = v
@@ -4507,20 +4506,17 @@ spawn(function()
                 if not root then return end
 
                 if player.Data.QuestValue.Value == "" then
-                    local NPC_Pos = CFrame.new(-9440, 15, 5740) -- Tọa độ NPC Skeleton Lord
+                    local NPC_Pos = CFrame.new(-9440, 15, 5740)
                     local distToNPC = (root.Position - NPC_Pos.Position).Magnitude
                     
-                    if distToNPC > 15 then
+                    if distToNPC > 10 then
                         local tween = game:GetService("TweenService"):Create(root, TweenInfo.new(distToNPC/300, Enum.EasingStyle.Linear), {CFrame = NPC_Pos})
                         tween:Play()
                         repeat task.wait() until tween.PlaybackState == Enum.PlaybackState.Completed or not _G.FarmBone
-                    end
-                    
-                    if _G.FarmBone and (root.Position - NPC_Pos.Position).Magnitude <= 20 then
+                    else
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HallowQuest1", 1)
-                        wait(1)
+                        task.wait(0.5)
                     end
-                
                 else
                     local BoneEnemies = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}
                     local target = nil
