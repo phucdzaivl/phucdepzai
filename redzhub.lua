@@ -4347,78 +4347,60 @@ task.spawn(function()
         end)
     end
 end)
-_G.FarmBone = true 
-_G.FarmBone = true
-
-local function EquipWeapon(weapon)
-    if game.Players.LocalPlayer.Backpack:FindFirstChild(weapon) then
-        local tool = game.Players.LocalPlayer.Backpack:FindFirstChild(weapon)
-        game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
-    end
-end
-
-local function AutoHaki()
-    if not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
-    end
-end
-
-local Players = game:GetService("Players")
-local VirtualUser = game:GetService("VirtualUser")
-local player = Players.LocalPlayer
-
 local AutoFarmBone = false
+local SelectWeapon = "Melee"
 
-function Tween(cf)
-    local player = game.Players.LocalPlayer
-    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        player.Character.HumanoidRootPart.CFrame = cf
-    end
+-- 
+function TP(cf)
+local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+hrp.CFrame = cf
 end
 
 function Click()
-    game:GetService("VirtualUser"):CaptureController()
-    game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+game:GetService("VirtualUser"):CaptureController()
+game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 end
 
 function AutoHaki()
-    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("Buso")
+pcall(function()
+game.ReplicatedStorage.Remotes.CommF_:InvokeServer("Buso")
+end)
 end
 
-function EquipTool(Tool)
-    local player = game.Players.LocalPlayer
-    if player.Backpack:FindFirstChild(Tool) then
-        player.Character.Humanoid:EquipTool(player.Backpack[Tool])
-    end
+function EquipTool(tool)
+local plr = game.Players.LocalPlayer
+if plr.Backpack:FindFirstChild(tool) then
+plr.Character.Humanoid:EquipTool(plr.Backpack[tool])
 end
-
-local SelectWeapon = "Melee" -- bạn có thể đổi thành "Sword" hoặc tên vũ khí
+end
 
 v485:AddToggle({
-    Id = "ToggleBone",
-    Name = "Auto Farm Bone",
-    Description = "Tự động Farm Bone",
-    Default = false,
-    Callback = function(v)
-        AutoFarmBone = v
-    end
+Id = "ToggleBone",
+Name = "Auto Farm Bone",
+Default = false,
+Callback = function(v)
+AutoFarmBone = v
+end
 })
 
-local FarmPos = CFrame.new(-9515.75,174.85,6079.40)
+local QuestPos = CFrame.new(-9515.75,174.85,6079.40)
 
 task.spawn(function()
-while task.wait() do
+while task.wait(0.3) do
 if AutoFarmBone then
 
 pcall(function()
 
-local player = game.Players.LocalPlayer
-local questGui = player.PlayerGui.Main.Quest
+local plr = game.Players.LocalPlayer
+local hrp = plr.Character.HumanoidRootPart
 
-if questGui.Visible then
+
+if (hrp.Position - QuestPos.Position).Magnitude < 10 then
+game.ReplicatedStorage.Remotes.CommF_:InvokeServer("StartQuest","HauntedQuest2",1)
+end
+end
 
 for _,mob in pairs(workspace.Enemies:GetChildren()) do
-
 if mob:FindFirstChild("HumanoidRootPart")
 and mob:FindFirstChild("Humanoid")
 and mob.Humanoid.Health > 0
@@ -4426,7 +4408,7 @@ and (
 mob.Name == "Reborn Skeleton"
 or mob.Name == "Living Zombie"
 or mob.Name == "Demonic Soul"
-or mob.Name == "Posessed Mummy"
+or mob.Name == "Possessed Mummy"
 ) then
 
 repeat
@@ -4435,25 +4417,15 @@ task.wait()
 AutoHaki()
 EquipTool(SelectWeapon)
 
-Tween(mob.HumanoidRootPart.CFrame * CFrame.new(0,30,0))
+TP(mob.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
 
 Click()
 
-until not AutoFarmBone
-or mob.Humanoid.Health <= 0
+until mob.Humanoid.Health <= 0
 or not mob.Parent
+or not AutoFarmBone
 
 end
-end
-
-else
-
-Tween(FarmPos)
-
-if (player.Character.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 3 then
-game.ReplicatedStorage.Remotes.CommF_:InvokeServer("StartQuest","HauntedQuest2",1)
-end
-
 end
 
 end)
