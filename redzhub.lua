@@ -4371,53 +4371,76 @@ local AutoFarmBone = false
 
 v485:AddToggle({
     Name = "Auto Farm Bone",
-local function AutoFarmBoneFunc()
-while _G.AutoFarmBone do
+    Description = "Tự động Farm Bone",
+    Default = false,
+    Callback = function(v509)
+        _G.AutoFarm = v509
+        StopTween(_G.AutoFarm)
+    end
+}):OnChanged(function(v)
+    AutoFarmBone = v
+end)
+
+_Options.ToggleBone:SetValue(false)
+
+local FarmPos = CFrame.new(-9515.75,174.85,6079.40)
+
+spawn(function()
+while task.wait() do
+if AutoFarmBone then
+
 pcall(function()
-local player = plr
-local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-local questUI = player.PlayerGui.Main.Quest
-local BonesTable = {"Reborn Skeleton","Living Zombie","Demonic Soul","Posessed Mummy"}
-if not root then return end
-local nearestBone
-local shortestDistance = math.huge
-for _, enemyName in pairs(BonesTable) do
-for _, enemy in pairs(workspace.Enemies:GetChildren()) do
-if enemy:FindFirstChild("HumanoidRootPart") and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 and enemy.Name == enemyName then
-local distance = (root.Position - enemy.HumanoidRootPart.Position).Magnitude
-if distance < shortestDistance then
-shortestDistance = distance
-nearestBone = enemy
-end
-end
-end
-end
-if nearestBone then
-if _G.AcceptQuestC and not questUI.Visible then
-if _G.DelayQuest then task.wait(20) end
-local questPos = CFrame.new(-9516.99316,172.017181,6078.46533,0,0,-1,0,1,0,1,0,0)
-tween(questPos)
-while (questPos.Position - root.Position).Magnitude > 50 do task.wait(0.2) end
-local randomQuest = math.random(1, 4)
-local questData = {
-{"StartQuest","HauntedQuest2",2},
-{"StartQuest","HauntedQuest2",1},
-{"StartQuest","HauntedQuest1",1},
-{"StartQuest","HauntedQuest1",2}
-}
-replicated.Remotes.CommF_:InvokeServer(unpack(questData[randomQuest]))
-end
+
+local player = game.Players.LocalPlayer
+local questGui = player.PlayerGui.Main.Quest
+
+if questGui.Visible then
+
+for _,mob in pairs(workspace.Enemies:GetChildren()) do
+
+if mob:FindFirstChild("HumanoidRootPart")
+and mob:FindFirstChild("Humanoid")
+and mob.Humanoid.Health > 0
+and (
+mob.Name == "Reborn Skeleton"
+or mob.Name == "Living Zombie"
+or mob.Name == "Demonic Soul"
+or mob.Name == "Posessed Mummy"
+) then
+
 repeat
 task.wait()
-Kill(nearestBone, true)
-until not _G.AutoFarmBone or nearestBone.Humanoid.Health <= 0 or not nearestBone.Parent or (_G.AcceptQuestC and not questUI.Visible)
+
+AutoHaki()
+EquipTool(SelectWeapon)
+
+Tween(mob.HumanoidRootPart.CFrame * CFrame.new(0,30,0))
+
+Click()
+
+until not AutoFarmBone
+or mob.Humanoid.Health <= 0
+or not mob.Parent
+
+end
+end
+
 else
-tween(CFrame.new(-9495.6806640625,453.58624267578125,5977.3486328125))
+
+Tween(FarmPos)
+
+if (player.Character.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 3 then
+game.ReplicatedStorage.Remotes.CommF_:InvokeServer("StartQuest","HauntedQuest2",1)
+end
+
+end
+
+end)
+
+end
 end
 end)
-task.wait()
-end
-end
+
 v485:AddToggle({
     Name = "Auto Accept Quest",
     Default = false,
