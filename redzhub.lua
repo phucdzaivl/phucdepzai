@@ -4348,107 +4348,60 @@ task.spawn(function()
     end
 end)
 
-v485:AddToggle({
-Id = "ToggleBone",
-Name = "Auto Farm Bone",
-Default = false,
-Callback = function(v)
-_G.AutoFarmBone = v
-if v then
-task.spawn(AutoFarmBoneFunc)
-end
-end
-})
+local player = game.Players.LocalPlayer
+local AutoFarmBone = false
 
-function AutoFarmBoneFunc()
-while _G.AutoFarmBone do
-pcall(function()
-
-local player = plr
-local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-local questUI = player.PlayerGui.Main.Quest
-
-local BonesTable = {
+local BoneMobs = {
 "Reborn Skeleton",
 "Living Zombie",
 "Demonic Soul",
 "Possessed Mummy"
 }
 
-if not root then return end
+v485:AddToggle({
+Id = "ToggleBone",
+Name = "Auto Farm Bone",
+Default = false,
+Callback = function(v)
+AutoFarmBone = v
+end
+})
 
-local nearestBone
-local shortestDistance = math.huge
+task.spawn(function()
+while task.wait(0.2) do
+if AutoFarmBone then
 
-for _, enemyName in pairs(BonesTable) do
-for _, enemy in pairs(workspace.Enemies:GetChildren()) do
+local character = player.Character
+local root = character and character:FindFirstChild("HumanoidRootPart")
+
+if root then
+
+for _,enemy in pairs(workspace.Enemies:GetChildren()) do
+
 if enemy:FindFirstChild("HumanoidRootPart")
 and enemy:FindFirstChild("Humanoid")
-and enemy.Humanoid.Health > 0
-and enemy.Name == enemyName then
+and enemy.Humanoid.Health > 0 then
 
-local distance = (root.Position - enemy.HumanoidRootPart.Position).Magnitude
+for _,name in pairs(BoneMobs) do
+if enemy.Name == name then
 
-if distance < shortestDistance then
-shortestDistance = distance
-nearestBone = enemy
+root.CFrame = enemy.HumanoidRootPart.CFrame * CFrame.new(0,20,0)
+
+game:GetService("VirtualUser"):CaptureController()
+game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+
+end
 end
 
 end
-end
-end
-
-if nearestBone then
-
--- NHẬN QUEST
-if _G.AcceptQuestC and not questUI.Visible then
-
-if _G.DelayQuest then
-task.wait(20)
-end
-
-local questPos = CFrame.new(-9516.99316,172.017181,6078.46533)
-
-tween(questPos)
-
-while (questPos.Position - root.Position).Magnitude > 50 do
-task.wait(0.2)
-end
-
-local randomQuest = math.random(1,4)
-
-local questData = {
-{"StartQuest","HauntedQuest2",2},
-{"StartQuest","HauntedQuest2",1},
-{"StartQuest","HauntedQuest1",1},
-{"StartQuest","HauntedQuest1",2}
-}
-
-replicated.Remotes.CommF_:InvokeServer(unpack(questData[randomQuest]))
 
 end
 
-repeat
-task.wait()
-Kill(nearestBone,true)
-
-until not _G.AutoFarmBone
-or nearestBone.Humanoid.Health <= 0
-or not nearestBone.Parent
-or (_G.AcceptQuestC and not questUI.Visible)
-
-else
-
-tween(CFrame.new(-9495.6806640625,453.58624267578125,5977.3486328125))
-
 end
 
+end
+end
 end)
-
-task.wait()
-
-end
-end
 
 
 v485:AddToggle({
