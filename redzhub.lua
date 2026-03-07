@@ -4364,11 +4364,11 @@ local function AutoHaki()
 end
 
 local HauntedCastlePos = CFrame.new(-9510, 164, 5786)
-local DO_CAO_CO_DINH = 25 
+local DO_CAO = 35 
 
 v485:AddToggle({
     Name = "Auto Accept Quest",
-    Description = "Nhận nhiệm vụ Farm Bone",
+    Description = "Tự động nhận Quest Farm Bone",
     Default = false,
     Callback = function(v)
         _G.AutoQuest = v
@@ -4381,12 +4381,8 @@ v485:AddToggle({
     Default = false,
     Callback = function(v)
         _G.FarmBone = v
-        
         if not v then
             StopTween(_G.FarmBone)
-            _G.BringMob = false
-            StartBring = false
-            
             for _, m in pairs(game.Workspace.Enemies:GetChildren()) do
                 if m:FindFirstChild("HumanoidRootPart") then
                     m.HumanoidRootPart.Anchored = false
@@ -4416,6 +4412,7 @@ spawn(function()
         if _G.FarmBone then
             _G.BringMob = false
             StartBring = false
+            _G.FarmBring = false
 
             pcall(function()
                 local player = game:GetService("Players").LocalPlayer
@@ -4434,19 +4431,17 @@ spawn(function()
                         
                         monster.HumanoidRootPart.Anchored = true
                         monster.Humanoid.WalkSpeed = 0
-
+                        
                         repeat
-                            if not _G.FarmBone then 
-                                monster.HumanoidRootPart.Anchored = false -- Thả quái nếu tắt ngang
-                                break 
-                            end
+                            if not _G.FarmBone then break end
                             
+                            -- Đảm bảo tắt gom quái liên tục trong vòng lặp
                             StartBring = false 
                             
                             AutoHaki()
                             EquipWeapon(_G.SelectWeapon)
                             
-                            topos(monster.HumanoidRootPart.CFrame * CFrame.new(0, DO_CAO_CO_DINH, 0))
+                            topos(monster.HumanoidRootPart.CFrame * CFrame.new(0, DO_CAO, 0))
                             
                             game:GetService("VirtualUser"):CaptureController()
                             game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
@@ -4458,7 +4453,7 @@ spawn(function()
                             monster.HumanoidRootPart.Anchored = false
                         end
                         
-                        wait(0.1)
+                        wait(0.2)
                     end
                 end
             end)
