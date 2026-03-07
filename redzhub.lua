@@ -4369,6 +4369,31 @@ local player = Players.LocalPlayer
 
 local AutoFarmBone = false
 
+function Tween(cf)
+    local player = game.Players.LocalPlayer
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.CFrame = cf
+    end
+end
+
+function Click()
+    game:GetService("VirtualUser"):CaptureController()
+    game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+end
+
+function AutoHaki()
+    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("Buso")
+end
+
+function EquipTool(Tool)
+    local player = game.Players.LocalPlayer
+    if player.Backpack:FindFirstChild(Tool) then
+        player.Character.Humanoid:EquipTool(player.Backpack[Tool])
+    end
+end
+
+local SelectWeapon = "Melee" -- bạn có thể đổi thành "Sword" hoặc tên vũ khí
+
 v485:AddToggle({
     Id = "ToggleBone",
     Name = "Auto Farm Bone",
@@ -4436,6 +4461,7 @@ end)
 end
 end
 end)
+
 
 v485:AddToggle({
     Name = "Auto Accept Quest",
