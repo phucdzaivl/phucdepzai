@@ -4363,101 +4363,98 @@ local function AutoHaki()
     end
 end
 
-local HauntedCastlePos = CFrame.new(-9510,164,5786)
-local DO_CAO = 35
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
+local player = Players.LocalPlayer
 
-_G.AutoQuest = false
+local HauntedCastlePos = CFrame.new(-9510,164,5786)
+local HEIGHT = 35
+
 _G.FarmBone = false
 
+local BoneMobs = {
+    ["Reborn Skeleton"] = true,
+    ["Living Zombie"] = true,
+    ["Demonic Soul"] = true,
+    ["Posessed Mummy"] = true
+}
+
 v485:AddToggle({
-    Name = "Auto Farm Bone ",
+    Name = "Auto Farm Bone",
     Default = false,
     Callback = function(v)
         _G.FarmBone = v
-        
+
         if not v then
-            for _,m in pairs(game.Workspace.Enemies:GetChildren()) do
-                if m:FindFirstChild("HumanoidRootPart") then
-                    m.HumanoidRootPart.Anchored = false
+            for _,m in pairs(workspace.Enemies:GetChildren()) do
+                local root = m:FindFirstChild("HumanoidRootPart")
+                if root then
+                    root.Anchored = false
                 end
             end
         end
     end
 })
 
-spawn(function()
-    while task.wait(1) do
-        if _G.AutoQuest then
-            pcall(function()
-                local player = game.Players.LocalPlayer
+task.spawn(function()
+while task.wait() do
+if _G.FarmBone then
 
-                if not player.PlayerGui.Main.Quest.Visible then
-                    local level = player.Data.Level.Value
-                    local quest = (level >= 1975) and "HauntedQuest2" or "HauntedQuest1"
+pcall(function()
 
-                    game.ReplicatedStorage.Remotes.CommF_:InvokeServer(
-                        "StartQuest",
-                        quest,
-                        1
-                    )
-                end
-            end)
-        end
-    end
+local char = player.Character
+if not char then return end
+
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+
+if (hrp.Position - HauntedCastlePos.Position).Magnitude > 500 then
+    topos(HauntedCastlePos)
+    task.wait(1)
+    return
+end
+
+for _,mob in pairs(workspace.Enemies:GetChildren()) do
+
+if not _G.FarmBone then break end
+
+if BoneMobs[mob.Name] then
+
+local humanoid = mob:FindFirstChild("Humanoid")
+local root = mob:FindFirstChild("HumanoidRootPart")
+
+if humanoid and root and humanoid.Health > 0 then
+
+repeat
+
+if not _G.FarmBone then break end
+
+topos(CFrame.new(
+root.Position.X,
+root.Position.Y + HEIGHT,
+root.Position.Z
+))
+
+AutoHaki()
+EquipWeapon(_G.SelectWeapon)
+
+VirtualUser:CaptureController()
+VirtualUser:Button1Down(Vector2.new(0,0))
+
+task.wait(0.05)
+
+until humanoid.Health <= 0
+or not mob.Parent
+or not _G.FarmBone
+
+end
+end
+end
+
 end)
 
-spawn(function()
-    while task.wait() do
-        if _G.FarmBone then
-
-            _G.BringMob = false
-            _G.FarmBring = false
-            StartBring = false
-
-            pcall(function()
-
-                local player = game.Players.LocalPlayer
-                local char = player.Character
-                local hrp = char.HumanoidRootPart
-
-                if (hrp.Position - HauntedCastlePos.Position).Magnitude > 500 then
-                    topos(HauntedCastlePos)
-                    task.wait(1)
-                    return
-                end
-
-                for _,mob in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if not _G.FarmBone then break end
-
-                    if (mob.Name == "Reborn Skeleton" or mob.Name == "Living Zombie")
-                    and mob:FindFirstChild("Humanoid")
-                    and mob:FindFirstChild("HumanoidRootPart")
-                    and mob.Humanoid.Health > 0 then
-
-                        repeat
-                            if not _G.FarmBone then break end
-
-                            local pos = mob.HumanoidRootPart.Position
-
-                            AutoHaki()
-                            EquipWeapon(_G.SelectWeapon)
-
-                            topos(CFrame.new(pos.X, pos.Y + DO_CAO, pos.Z))
-
-                            game:GetService("VirtualUser"):CaptureController()
-                            game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0))
-
-                            task.wait(0.05)
-
-                        until mob.Humanoid.Health <= 0
-                        or not mob.Parent
-                        or not _G.FarmBone
-
-                    end
-                end
-            end)
-        end
-    end
+end
+end
 end)
 v485:AddToggle({
     Name = "Auto Accept Quest",
