@@ -4363,7 +4363,16 @@ local function AutoHaki()
     end
 end
 
-local HauntedCastlePos = CFrame.new(-9510, 164, 5786) 
+local HauntedCastlePos = CFrame.new(-9510, 164, 5786)
+
+v485:AddToggle({
+    Name = "Auto Accept Quest",
+    Description = "Nhận nhiệm vụ Farm Bone",
+    Default = false,
+    Callback = function(v)
+        _G.AutoQuest = v
+    end
+})
 
 v485:AddToggle({
     Name = "Auto Farm Bone",
@@ -4373,6 +4382,7 @@ v485:AddToggle({
         _G.FarmBone = v
         if not v then
             StopTween(_G.FarmBone)
+            _G.IsFarming = false
         end
     end
 })
@@ -4382,15 +4392,10 @@ spawn(function()
         if _G.AutoQuest then
             pcall(function()
                 local player = game:GetService("Players").LocalPlayer
-                local MyQuest = player.PlayerGui.Main.Quest
-                
-                if not MyQuest.Visible then
+                if not player.PlayerGui.Main.Quest.Visible then
                     local MyLevel = player.Data.Level.Value
-                    if MyLevel >= 1975 then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1) -- Living Zombie
-                    else
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest1", 1) -- Reborn Skeleton
-                    end
+                    local qName = (MyLevel >= 1975) and "HauntedQuest2" or "HauntedQuest1"
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", qName, 1)
                 end
             end)
         end
@@ -4400,6 +4405,9 @@ end)
 spawn(function()
     while wait() do
         if _G.FarmBone then
+            StartBring = false 
+            _G.BringMob = false 
+
             pcall(function()
                 local player = game:GetService("Players").LocalPlayer
                 local MyRoot = player.Character.HumanoidRootPart
@@ -4413,41 +4421,44 @@ spawn(function()
                 for _, monster in pairs(game.Workspace.Enemies:GetChildren()) do
                     if (monster.Name == "Reborn Skeleton" or monster.Name == "Living Zombie") 
                     and monster:FindFirstChild("Humanoid") 
-                    and monster:FindFirstChild("HumanoidRootPart") 
                     and monster.Humanoid.Health > 0 then
                         
+                        if monster:FindFirstChild("HumanoidRootPart") then
+                            monster.HumanoidRootPart.Anchored = true -- Thử đóng băng quái
+                            monster.Humanoid.WalkSpeed = 0
+                        end
+
                         repeat
                             if not _G.FarmBone then break end
+                            
+                            StartBring = false 
                             
                             AutoHaki()
                             EquipWeapon(_G.SelectWeapon)
                             
-                            topos(monster.HumanoidRootPart.CFrame * CFrame.new(0, 20, 0))
-                            
-                            monster.Humanoid.WalkSpeed = 0
+                            if monster:FindFirstChild("HumanoidRootPart") then
+                                topos(monster.HumanoidRootPart.CFrame * CFrame.new(0, 40, 0))
+                            end
                             
                             game:GetService("VirtualUser"):CaptureController()
                             game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
                             
-                            wait(_G.Fast_Delay or 0.1)
+                            wait(0.1)
                         until not _G.FarmBone or not monster.Parent or monster.Humanoid.Health <= 0
                         
-                        wait(0.2)
+                        if monster:FindFirstChild("HumanoidRootPart") then
+                            monster.HumanoidRootPart.Anchored = false
+                        end
+                        
+                        wait(0.5) 
                     end
                 end
             end)
+        else
+            StartBring = false
         end
     end
 end)
-v485:AddToggle({
-    Name = "Auto Accept Quest",
-    Description = "Tự động nhận nhiệm vụ Farm Bone",
-    Default = false,
-    Callback = function(v)
-        _G.AutoQuest = v
-    end
-})
-
 v485:AddToggle({
     Name = "Seperator Hallow Scythe",
     Description = "Tri\225\187\135u h\225\187\147i v\195\160 ti\195\170u di\225\187\135t Soul Reaper",
