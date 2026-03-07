@@ -4370,18 +4370,18 @@ _G.AutoQuest = false
 _G.FarmBone = false
 
 v485:AddToggle({
-    Name = "Auto Accept Quest",
-    Default = false,
-    Callback = function(v)
-        _G.AutoQuest = v
-    end
-})
-
-v485:AddToggle({
     Name = "Auto Farm Bone ",
     Default = false,
     Callback = function(v)
         _G.FarmBone = v
+        
+        if not v then
+            for _,m in pairs(game.Workspace.Enemies:GetChildren()) do
+                if m:FindFirstChild("HumanoidRootPart") then
+                    m.HumanoidRootPart.Anchored = false
+                end
+            end
+        end
     end
 })
 
@@ -4409,7 +4409,13 @@ end)
 spawn(function()
     while task.wait() do
         if _G.FarmBone then
+
+            _G.BringMob = false
+            _G.FarmBring = false
+            StartBring = false
+
             pcall(function()
+
                 local player = game.Players.LocalPlayer
                 local char = player.Character
                 local hrp = char.HumanoidRootPart
@@ -4431,15 +4437,17 @@ spawn(function()
                         repeat
                             if not _G.FarmBone then break end
 
+                            local pos = mob.HumanoidRootPart.Position
+
                             AutoHaki()
                             EquipWeapon(_G.SelectWeapon)
 
-                            topos(mob.HumanoidRootPart.CFrame * CFrame.new(0,DO_CAO,0))
+                            topos(CFrame.new(pos.X, pos.Y + DO_CAO, pos.Z))
 
                             game:GetService("VirtualUser"):CaptureController()
                             game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0))
 
-                            task.wait(0.2)
+                            task.wait(0.05)
 
                         until mob.Humanoid.Health <= 0
                         or not mob.Parent
@@ -4451,6 +4459,14 @@ spawn(function()
         end
     end
 end)
+v485:AddToggle({
+    Name = "Auto Accept Quest",
+    Default = false,
+    Callback = function(v)
+        _G.AutoQuest = v
+    end
+})
+
 v485:AddToggle({
     Name = "Seperator Hallow Scythe",
     Description = "Tri\225\187\135u h\225\187\147i v\195\160 ti\195\170u di\225\187\135t Soul Reaper",
