@@ -3763,7 +3763,7 @@ v484:AddDiscordInvite({
     Name = " Hack Và Anh Em Xã Đoàn 🤞🙌",
     Description = "Tham gia discord của tôi để nhận them thông báo",
     Logo = "rbxassetid://101400411067843",
-    Invite = " https://discord.gg/UbFtRPY5N3" 
+    Invite = " https://discord.gg/5xJTRgu7" 
 
 })local _ = v485:AddSection({"Select Melee,Sword,Gun,Fruit"})
 _G.SelectWeapon = "Melee"
