@@ -4,13 +4,11 @@ end)
 hookfunction(require(game:GetService("ReplicatedStorage").Effect.Container.Respawn), function()
     -- empty block
 end)
-if game.PlaceId == 2753915549 then
-    World1 = true
-elseif game.PlaceId == 4442272183 then
-    World2 = true
-elseif game.PlaceId == 7449423635 then
-    World3 = true
-end
+
+World1 = game.PlaceId == 2753915549 or game.PlaceId == 85211729168715
+World2 = game.PlaceId == 4442272183 or game.PlaceId == 79091703265657
+World3 = game.PlaceId == 7449423635 or game.PlaceId == 100117331123089
+
 function MaterialMon()
     if _G.SelectMaterial ~= "Radiactive Material" then
         if _G.SelectMaterial ~= "Leather + Scrap Metal" then
