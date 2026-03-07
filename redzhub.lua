@@ -4369,8 +4369,6 @@ local player = Players.LocalPlayer
 
 local AutoFarmBone = false
 
-local AutoFarmBone = false
-
 v485:AddToggle({
     Id = "ToggleBone",
     Name = "Auto Farm Bone",
