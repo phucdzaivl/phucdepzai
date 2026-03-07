@@ -4363,7 +4363,6 @@ local function AutoHaki()
     end
 end
 
--- Tọa độ Đảo Lâu đài bóng tối (Haunted Castle)
 local HauntedCastlePos = CFrame.new(-9510, 164, 5786) 
 
 v485:AddToggle({
@@ -4374,10 +4373,29 @@ v485:AddToggle({
         _G.FarmBone = v
         if not v then
             StopTween(_G.FarmBone)
-            _G.IsFarming = false 
         end
     end
 })
+
+spawn(function()
+    while wait(1) do
+        if _G.AutoQuest then
+            pcall(function()
+                local player = game:GetService("Players").LocalPlayer
+                local MyQuest = player.PlayerGui.Main.Quest
+                
+                if not MyQuest.Visible then
+                    local MyLevel = player.Data.Level.Value
+                    if MyLevel >= 1975 then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1) -- Living Zombie
+                    else
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest1", 1) -- Reborn Skeleton
+                    end
+                end
+            end)
+        end
+    end
+end)
 
 spawn(function()
     while wait() do
@@ -4385,7 +4403,6 @@ spawn(function()
             pcall(function()
                 local player = game:GetService("Players").LocalPlayer
                 local MyRoot = player.Character.HumanoidRootPart
-                local MyQuest = player.PlayerGui.Main.Quest
                 
                 if (MyRoot.Position - HauntedCastlePos.Position).Magnitude > 500 then
                     topos(HauntedCastlePos)
@@ -4393,17 +4410,7 @@ spawn(function()
                     return 
                 end
 
-                if not MyQuest.Visible then
-                    local MyLevel = player.Data.Level.Value
-                    if MyLevel >= 1975 then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1)
-                    else
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest1", 1)
-                    end
-                end
-
                 for _, monster in pairs(game.Workspace.Enemies:GetChildren()) do
-                    -- Chỉ nhắm vào Reborn Skeleton hoặc Living Zombie còn máu
                     if (monster.Name == "Reborn Skeleton" or monster.Name == "Living Zombie") 
                     and monster:FindFirstChild("Humanoid") 
                     and monster:FindFirstChild("HumanoidRootPart") 
@@ -4415,7 +4422,9 @@ spawn(function()
                             AutoHaki()
                             EquipWeapon(_G.SelectWeapon)
                             
-                            topos(monster.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0))
+                            topos(monster.HumanoidRootPart.CFrame * CFrame.new(0, 20, 0))
+                            
+                            monster.Humanoid.WalkSpeed = 0
                             
                             game:GetService("VirtualUser"):CaptureController()
                             game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
@@ -4430,6 +4439,15 @@ spawn(function()
         end
     end
 end)
+v485:AddToggle({
+    Name = "Auto Accept Quest",
+    Description = "Tự động nhận nhiệm vụ Farm Bone",
+    Default = false,
+    Callback = function(v)
+        _G.AutoQuest = v
+    end
+})
+
 v485:AddToggle({
     Name = "Seperator Hallow Scythe",
     Description = "Tri\225\187\135u h\225\187\147i v\195\160 ti\195\170u di\225\187\135t Soul Reaper",
