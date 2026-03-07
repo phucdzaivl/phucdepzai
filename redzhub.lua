@@ -4363,6 +4363,9 @@ local function AutoHaki()
     end
 end
 
+-- Tọa độ Đảo Lâu đài bóng tối (Haunted Castle)
+local HauntedCastlePos = CFrame.new(-9510, 164, 5786) 
+
 v485:AddToggle({
     Name = "Auto Farm Bone",
     Description = "Tự động Farm Bone",
@@ -4371,7 +4374,7 @@ v485:AddToggle({
         _G.FarmBone = v
         if not v then
             StopTween(_G.FarmBone)
-            StartBring = false
+            _G.IsFarming = false 
         end
     end
 })
@@ -4380,47 +4383,47 @@ spawn(function()
     while wait() do
         if _G.FarmBone then
             pcall(function()
-                local MyQuest = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest
+                local player = game:GetService("Players").LocalPlayer
+                local MyRoot = player.Character.HumanoidRootPart
+                local MyQuest = player.PlayerGui.Main.Quest
+                
+                if (MyRoot.Position - HauntedCastlePos.Position).Magnitude > 500 then
+                    topos(HauntedCastlePos)
+                    wait(1)
+                    return 
+                end
+
                 if not MyQuest.Visible then
-                    -- Tự động chọn Quest dựa trên Level tại Haunted Castle
-                    local MyLevel = game.Players.LocalPlayer.Data.Level.Value
+                    local MyLevel = player.Data.Level.Value
                     if MyLevel >= 1975 then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1) -- Living Zombie
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1)
                     else
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest1", 1) -- Reborn Skeleton
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest1", 1)
                     end
                 end
 
-                for _, v522 in pairs(game.Workspace.Enemies:GetChildren()) do
-                    -- Chỉ nhắm mục tiêu quái tại đảo Bone
-                    if (v522.Name == "Reborn Skeleton" or v522.Name == "Living Zombie") 
-                    and v522:FindFirstChild("Humanoid") 
-                    and v522:FindFirstChild("HumanoidRootPart") 
-                    and v522.Humanoid.Health > 0 then
+                for _, monster in pairs(game.Workspace.Enemies:GetChildren()) do
+                    -- Chỉ nhắm vào Reborn Skeleton hoặc Living Zombie còn máu
+                    if (monster.Name == "Reborn Skeleton" or monster.Name == "Living Zombie") 
+                    and monster:FindFirstChild("Humanoid") 
+                    and monster:FindFirstChild("HumanoidRootPart") 
+                    and monster.Humanoid.Health > 0 then
                         
                         repeat
                             if not _G.FarmBone then break end
-                            wait(_G.Fast_Delay or 0.1)
                             
-                            StartBring = true
                             AutoHaki()
                             EquipWeapon(_G.SelectWeapon)
                             
-                            topos(v522.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0))
-                            
-                            v522.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                            v522.HumanoidRootPart.CanCollide = false
-                            v522.Humanoid.WalkSpeed = 0
-                            
-                            FarmPos = v522.HumanoidRootPart.CFrame
-                            MonFarm = v522.Name
+                            topos(monster.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0))
                             
                             game:GetService("VirtualUser"):CaptureController()
                             game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
                             
-                        until not _G.FarmBone or not v522.Parent or v522.Humanoid.Health <= 0
+                            wait(_G.Fast_Delay or 0.1)
+                        until not _G.FarmBone or not monster.Parent or monster.Humanoid.Health <= 0
                         
-                        StartBring = false
+                        wait(0.2)
                     end
                 end
             end)
