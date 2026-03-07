@@ -4367,18 +4367,6 @@ local Players = game:GetService("Players")
 local VirtualUser = game:GetService("VirtualUser")
 local player = Players.LocalPlayer
 
-local HauntedCastlePos = CFrame.new(-9510,164,5786)
-local HEIGHT = 35
-
-_G.FarmBone = false
-
-local BoneMobs = {
-    ["Reborn Skeleton"] = true,
-    ["Living Zombie"] = true,
-    ["Demonic Soul"] = true,
-    ["Posessed Mummy"] = true
-}
-
 v485:AddToggle({
     Name = "Auto Farm Bone",
         Default = false,
