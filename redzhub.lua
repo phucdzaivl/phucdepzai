@@ -4364,6 +4364,7 @@ local function AutoHaki()
 end
 
 local HauntedCastlePos = CFrame.new(-9510, 164, 5786)
+local FarmHeight = 30
 
 v485:AddToggle({
     Name = "Auto Accept Quest",
@@ -4382,7 +4383,6 @@ v485:AddToggle({
         _G.FarmBone = v
         if not v then
             StopTween(_G.FarmBone)
-            _G.IsFarming = false
         end
     end
 })
@@ -4405,14 +4405,14 @@ end)
 spawn(function()
     while wait() do
         if _G.FarmBone then
-            StartBring = false 
-            _G.BringMob = false 
+            _G.BringMob = false
+            StartBring = false
 
             pcall(function()
                 local player = game:GetService("Players").LocalPlayer
-                local MyRoot = player.Character.HumanoidRootPart
                 
-                if (MyRoot.Position - HauntedCastlePos.Position).Magnitude > 500 then
+                -- Tự động Tween đến đảo khi bật
+                if (player.Character.HumanoidRootPart.Position - HauntedCastlePos.Position).Magnitude > 500 then
                     topos(HauntedCastlePos)
                     wait(1)
                     return 
@@ -4424,20 +4424,19 @@ spawn(function()
                     and monster.Humanoid.Health > 0 then
                         
                         if monster:FindFirstChild("HumanoidRootPart") then
-                            monster.HumanoidRootPart.Anchored = true -- Thử đóng băng quái
+                            monster.HumanoidRootPart.Anchored = true
                             monster.Humanoid.WalkSpeed = 0
                         end
 
                         repeat
                             if not _G.FarmBone then break end
-                            
-                            StartBring = false 
+                            StartBring = false -- Ép tắt gom quái liên tục
                             
                             AutoHaki()
                             EquipWeapon(_G.SelectWeapon)
                             
                             if monster:FindFirstChild("HumanoidRootPart") then
-                                topos(monster.HumanoidRootPart.CFrame * CFrame.new(0, 40, 0))
+                                topos(monster.HumanoidRootPart.CFrame * CFrame.new(0, FarmHeight, 0))
                             end
                             
                             game:GetService("VirtualUser"):CaptureController()
@@ -4450,12 +4449,10 @@ spawn(function()
                             monster.HumanoidRootPart.Anchored = false
                         end
                         
-                        wait(0.5) 
+                        wait(0.2)
                     end
                 end
             end)
-        else
-            StartBring = false
         end
     end
 end)
