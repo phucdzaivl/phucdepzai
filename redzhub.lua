@@ -4369,6 +4369,8 @@ local player = Players.LocalPlayer
 
 local AutoFarmBone = false
 
+local AutoFarmBone = false
+
 v485:AddToggle({
     Id = "ToggleBone",
     Name = "Auto Farm Bone",
@@ -4381,7 +4383,7 @@ v485:AddToggle({
 
 local FarmPos = CFrame.new(-9515.75,174.85,6079.40)
 
-spawn(function()
+task.spawn(function()
 while task.wait() do
 if AutoFarmBone then
 
