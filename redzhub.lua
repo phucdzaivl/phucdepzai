@@ -4370,18 +4370,14 @@ local player = Players.LocalPlayer
 local AutoFarmBone = false
 
 v485:AddToggle({
+    Id = "ToggleBone",
     Name = "Auto Farm Bone",
     Description = "Tự động Farm Bone",
     Default = false,
-    Callback = function(v509)
-        _G.AutoFarm = v509
-        StopTween(_G.AutoFarm)
+    Callback = function(v)
+        AutoFarmBone = v
     end
-}):OnChanged(function(v)
-    AutoFarmBone = v
-end)
-
-_Options.ToggleBone:SetValue(false)
+})
 
 local FarmPos = CFrame.new(-9515.75,174.85,6079.40)
 
