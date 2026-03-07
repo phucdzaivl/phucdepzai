@@ -4381,81 +4381,85 @@ local BoneMobs = {
 
 v485:AddToggle({
     Name = "Auto Farm Bone",
-    Default = false,
-    Callback = function(v)
-        _G.FarmBone = v
+        Default = false,
+    }):OnChanged(function(p342)
+        AutoFarmBone = p342
+    end)
+    _Options.ToggleBone:SetValue(false)
 
-        if not v then
-            for _,m in pairs(workspace.Enemies:GetChildren()) do
-                local root = m:FindFirstChild("HumanoidRootPart")
-                if root then
-                    root.Anchored = false
-                end
+    local u343 = CFrame.new(-9515.75, 174.8521728515625, 6079.40625)
+
+    spawn(function()
+        while wait() do
+            if AutoFarmBone then
+                pcall(function()
+                    local _Text = game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
+
+                    if not string.find(_Text, 'Demonic Soul') then
+                        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('AbandonQuest')
+                    end
+                    if game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Visible ~= false then
+                        if game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+                            if game:GetService('Workspace').Enemies:FindFirstChild('Reborn Skeleton') or (game:GetService('Workspace').Enemies:FindFirstChild('Living Zombie') or (game:GetService('Workspace').Enemies:FindFirstChild('Demonic Soul') or game:GetService('Workspace').Enemies:FindFirstChild('Posessed Mummy'))) then
+                                local v345, v346, v347 = pairs(game:GetService('Workspace').Enemies:GetChildren())
+
+                                while true do
+                                    local v348
+
+                                    v347, v348 = v345(v346, v347)
+
+                                    if v347 == nil then
+                                        break
+                                    end
+                                    if v348:FindFirstChild('HumanoidRootPart') and (v348:FindFirstChild('Humanoid') and (v348.Humanoid.Health > 0 and (v348.Name == 'Reborn Skeleton' or (v348.Name == 'Living Zombie' or (v348.Name == 'Demonic Soul' or v348.Name == 'Posessed Mummy'))))) then
+                                        if string.find(game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, 'Demonic Soul') then
+                                            repeat
+                                                task.wait()
+                                                AutoHaki()
+                                                EquipTool(SelectWeapon)
+                                                Tween(v348.HumanoidRootPart.CFrame * Pos)
+
+                                                v348.HumanoidRootPart.Size = Vector3.new(1, 1, 1)
+                                                v348.HumanoidRootPart.Transparency = 1
+                                                v348.Humanoid.JumpPower = 0
+                                                v348.Humanoid.WalkSpeed = 0
+                                                v348.HumanoidRootPart.CanCollide = false
+                                                FarmPos = v348.HumanoidRootPart.CFrame
+                                                MonFarm = v348.Name
+
+                                                Click()
+                                            until not AutoFarmBone or (v348.Humanoid.Health <= 0 or not v348.Parent) or game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Visible == false
+                                        else
+                                            game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('AbandonQuest')
+                                        end
+                                    end
+                                end
+                            elseif game:GetService('ReplicatedStorage'):FindFirstChild('Demonic Soul') then
+                                Tween(game:GetService('ReplicatedStorage'):FindFirstChild('Demonic Soul').HumanoidRootPart.CFrame * CFrame.new(15, 10, 2))
+                            end
+                        end
+                    else
+                        if BypassTP then
+                            wait()
+
+                            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - u343.Position).Magnitude <= 2500 then
+                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - u343.Position).Magnitude < 2500 then
+                                    Tween(u343)
+                                end
+                            else
+                                BTP(u343)
+                            end
+                        else
+                            Tween(u343)
+                        end
+                        if (u343.Position - game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 3 then
+                            game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('StartQuest', 'HauntedQuest2', 1)
+                        end
+                    end
+                end)
             end
         end
-    end
-})
-
-task.spawn(function()
-while task.wait() do
-if _G.FarmBone then
-
-pcall(function()
-
-local char = player.Character
-if not char then return end
-
-local hrp = char:FindFirstChild("HumanoidRootPart")
-if not hrp then return end
-
-if (hrp.Position - HauntedCastlePos.Position).Magnitude > 500 then
-    topos(HauntedCastlePos)
-    task.wait(1)
-    return
-end
-
-for _,mob in pairs(workspace.Enemies:GetChildren()) do
-
-if not _G.FarmBone then break end
-
-if BoneMobs[mob.Name] then
-
-local humanoid = mob:FindFirstChild("Humanoid")
-local root = mob:FindFirstChild("HumanoidRootPart")
-
-if humanoid and root and humanoid.Health > 0 then
-
-repeat
-
-if not _G.FarmBone then break end
-
-topos(CFrame.new(
-root.Position.X,
-root.Position.Y + HEIGHT,
-root.Position.Z
-))
-
-AutoHaki()
-EquipWeapon(_G.SelectWeapon)
-
-VirtualUser:CaptureController()
-VirtualUser:Button1Down(Vector2.new(0,0))
-
-task.wait(0.05)
-
-until humanoid.Health <= 0
-or not mob.Parent
-or not _G.FarmBone
-
-end
-end
-end
-
-end)
-
-end
-end
-end)
+    end)
 v485:AddToggle({
     Name = "Auto Accept Quest",
     Default = false,
