@@ -8,7 +8,7 @@ local Services = setmetatable({}, {
 
 
 local HttpService = Services.HttpService
-local FolderName = "Phudzai Hub Folder"
+local FolderName = "Phucdzai Hub | Farm"
 local FileName = "Settings.json"
 local FullPath = FolderName .. "/" .. FileName
 
@@ -87,6 +87,7 @@ end
 
 local Lighting = Services.Lighting
 
+-- Full bright (optimized lighting)
 Lighting.Ambient = Color3.new(0.695, 0.695, 0.695)
 Lighting.ColorShift_Bottom = Color3.new(0.695, 0.695, 0.695)
 Lighting.ColorShift_Top = Color3.new(0.695, 0.695, 0.695)
@@ -99,8 +100,7 @@ Lighting.FogEnd = 1e10
 do
     ply = Services.Players
     plr = ply.LocalPlayer
-    local char = plr.Character or plr.CharacterAdded:Wait()
-    Root = char:WaitForChild('HumanoidRootPart')
+    Root = plr.Character.HumanoidRootPart
     replicated = Services.ReplicatedStorage
     Lv = plr.Data.Level.Value
     TeleportService = Services.TeleportService
@@ -114,11 +114,13 @@ do
     Stats = Services.Stats
     Energy = plr.Character.Energy.Value
     
+    -- Tables
     Boss = {}
     BringConnections = {}
     MaterialList = {}
     NPCList = {}
     
+    -- Flags
     shouldTween = false
     SoulGuitar = false
     KenTest = true
@@ -131,6 +133,7 @@ do
     Num_self = 25
 end
 
+-- Wait for game to load
 repeat
     local loading = plr.PlayerGui:FindFirstChild("Main")
     loading = loading and loading:FindFirstChild("Loading")
@@ -366,7 +369,7 @@ G.Alive = function(I)
 		return e and e.Health > 0;
 	end;
 G.Pos = function(I, e)
-		return (Root.Position - I.Position).Magnitude <= e;
+		return (Root.Position - mode.Position).Magnitude <= e;
 	end;
 G.Dist = function(I, e)
 		return (Root.Position - (I:FindFirstChild("HumanoidRootPart")).Position).Magnitude <= e;
@@ -2638,8 +2641,8 @@ end
 
 local bearlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Myvkhuy/BearLibrary/Bearlib/V8.1.lua"))()
 local Window = bearlib:MakeWindow({
-    Title = "Phucdzai Hub",
-    SubTitle = "by Phudzai Hub",
+    Title = "Phucdzai Hub | Farm",
+    SubTitle = "by Quang Huy",
     SaveFolder = true,
     Image = "82107905019656"
 })
@@ -2722,7 +2725,7 @@ local v15 = Window:MakeTab({
 })
 
 v0:AddProfile({
-    Name = "Phucdzai ☑",             
+    Name = "Quang Huy ☑",             
     Bio = "I LOVE VIETNAM'S", 
     Avatar = "rbxassetid://75089236463451", 
     Cover = "rbxassetid://113942234405258", 
@@ -2740,25 +2743,26 @@ v0:AddSingleDiscordCard({
 
 v0:AddParagraph({
     "Thông báo",
-    "•Phucdzai hub\n• Script by Phuc Ngo\n• Creation Date: 7-6-2026\n• Last updated date: 7-6-2026\n• Aura gun hiện chưa bắn được thuyền và leviathan"
+    "•Phucdzai Hub\n• Script by Quang Huy\n• Creation Date: 7-6-2026\n• Last updated date: 7-6-2026\n• Aura gun hiện chưa bắn được thuyền và leviathan"
 })
 
 -- 1. Tạo Discord Invite Container với 2 card
 local discordContainer = v0:AddDiscordInvite({
     -- Card 1
     {
+        "Join the TikTok Group",
         "Follow our TikTok channel for the latest updates!!!",
-        "rbxassetid:// 130111234053766",
+        "rbxassetid://134852113716171",
         "rbxassetid://84636833673111",
         500,
         1500,
-        "https://www.tiktok.com/@phuc_2k13?lang=en"
+        "https://tiktok.me/group/ZSm9FrLKD/"
     },
     -- Card 2
     {
         "Join the Discord group",
         "Join the Discord group to stay updated with the latest announcements.",
-        "rbxassetid:// 101400411067843",
+        "rbxassetid://134852113716171",
         "rbxassetid://123427419242741",
         250,
         1000,
@@ -5149,7 +5153,7 @@ task.spawn(function()
 end)
 
 -- =========================================================
--- AUTO FISHING SYSTEM (Ported from Bear Hub)
+-- AUTO FISHING SYSTEM (Ported from Phucdzai Hub)
 -- =========================================================
 v5:AddSection({"Fishing"})
 
@@ -6090,7 +6094,7 @@ if World3 then
         pcall(function()
             while wait(Sec) do
                 if _G.Auto_Rainbow_Haki then
-                    -- Copy logic Rainbow Haki từ file Bear hub.txt (dòng 2058-2154) vào đây nếu cần
+                    -- Copy logic Rainbow Haki từ file Phucdzai Hub.txt (dòng 2058-2154) vào đây nếu cần
                     -- Đoạn này khá dài, bạn có thể thêm sau nếu muốn
                 end;
             end;
@@ -10517,8 +10521,7 @@ v11:AddToggle({
             task.spawn(function()
                 local targetIsland = workspace._WorldOrigin.Locations:FindFirstChild(_G.Island)
                 if targetIsland and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                    local local char = plr.Character or plr.CharacterAdded:Wait()
-    Root = char:WaitForChild('HumanoidRootPart')
+                    local Root = plr.Character.HumanoidRootPart
                     
                     -- 1. Subida Instantânea (700 studs acima)
                     Root.CFrame = Root.CFrame * CFrame.new(0, 700, 0)
@@ -11612,7 +11615,7 @@ v14:AddToggle({
                 local data = MeleeCoords[SelectedMelee]
                 if not data or not data.Pos then
                     bearlib:Notify({
-                        Title = "Bear Hub",
+                        Title = "Phucdzai Hub",
                         Message = "Lỗi: Không tìm thấy toạ độ cho Melee này ở Sea hiện tại!",
                         Duration = 3
                     })
@@ -11638,7 +11641,7 @@ v14:AddToggle({
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", data.Key)
                         
                         bearlib:Notify({
-                            Title = "Bear Hub",
+                            Title = "Phucdzai Hub",
                             Message = "Đã mua: " .. SelectedMelee,
                             Duration = 2
                         })
