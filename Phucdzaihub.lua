@@ -8,7 +8,7 @@ local Services = setmetatable({}, {
 
 
 local HttpService = Services.HttpService
-local FolderName = "Bear hub | Farm"
+local FolderName = "Phudzai Hub Folder"
 local FileName = "Settings.json"
 local FullPath = FolderName .. "/" .. FileName
 
@@ -87,7 +87,6 @@ end
 
 local Lighting = Services.Lighting
 
--- Full bright (optimized lighting)
 Lighting.Ambient = Color3.new(0.695, 0.695, 0.695)
 Lighting.ColorShift_Bottom = Color3.new(0.695, 0.695, 0.695)
 Lighting.ColorShift_Top = Color3.new(0.695, 0.695, 0.695)
@@ -114,13 +113,11 @@ do
     Stats = Services.Stats
     Energy = plr.Character.Energy.Value
     
-    -- Tables
     Boss = {}
     BringConnections = {}
     MaterialList = {}
     NPCList = {}
     
-    -- Flags
     shouldTween = false
     SoulGuitar = false
     KenTest = true
@@ -133,7 +130,6 @@ do
     Num_self = 25
 end
 
--- Wait for game to load
 repeat
     local loading = plr.PlayerGui:FindFirstChild("Main")
     loading = loading and loading:FindFirstChild("Loading")
@@ -2641,8 +2637,8 @@ end
 
 local bearlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Myvkhuy/BearLibrary/Bearlib/V8.1.lua"))()
 local Window = bearlib:MakeWindow({
-    Title = "Bear hub | Farm",
-    SubTitle = "by Quang Huy",
+    Title = "Phucdzai Hub",
+    SubTitle = "by Phudzai Hub",
     SaveFolder = true,
     Image = "82107905019656"
 })
@@ -2651,7 +2647,7 @@ local Window = bearlib:MakeWindow({
 task.spawn(function()
     task.wait(2)
     bearlib:Notify({
-        Title = "Bear Hub",
+        Title = "Phucdzai Hub",
         Message = "Script Load Download Completed",
         Duration = 10
     })
@@ -2725,7 +2721,7 @@ local v15 = Window:MakeTab({
 })
 
 v0:AddProfile({
-    Name = "Quang Huy ☑",             
+    Name = "Phucdzai ☑",             
     Bio = "I LOVE VIETNAM'S", 
     Avatar = "rbxassetid://75089236463451", 
     Cover = "rbxassetid://113942234405258", 
@@ -2743,26 +2739,25 @@ v0:AddSingleDiscordCard({
 
 v0:AddParagraph({
     "Thông báo",
-    "•Bear hub\n• Script by Quang Huy\n• Creation Date: 7-6-2026\n• Last updated date: 7-6-2026\n• Aura gun hiện chưa bắn được thuyền và leviathan"
+    "•Phucdzai hub\n• Script by Phuc Ngo\n• Creation Date: 7-6-2026\n• Last updated date: 7-6-2026\n• Aura gun hiện chưa bắn được thuyền và leviathan"
 })
 
 -- 1. Tạo Discord Invite Container với 2 card
 local discordContainer = v0:AddDiscordInvite({
     -- Card 1
     {
-        "Join the TikTok Group",
         "Follow our TikTok channel for the latest updates!!!",
-        "rbxassetid://134852113716171",
+        "rbxassetid:// 130111234053766",
         "rbxassetid://84636833673111",
         500,
         1500,
-        "https://tiktok.me/group/ZSm9FrLKD/"
+        "https://www.tiktok.com/@phuc_2k13?lang=en"
     },
     -- Card 2
     {
         "Join the Discord group",
         "Join the Discord group to stay updated with the latest announcements.",
-        "rbxassetid://134852113716171",
+        "rbxassetid:// 101400411067843",
         "rbxassetid://123427419242741",
         250,
         1000,
