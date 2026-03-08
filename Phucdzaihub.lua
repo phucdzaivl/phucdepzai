@@ -99,7 +99,8 @@ Lighting.FogEnd = 1e10
 do
     ply = Services.Players
     plr = ply.LocalPlayer
-    Root = plr.Character.HumanoidRootPart
+    local char = plr.Character or plr.CharacterAdded:Wait()
+    Root = char:WaitForChild('HumanoidRootPart')
     replicated = Services.ReplicatedStorage
     Lv = plr.Data.Level.Value
     TeleportService = Services.TeleportService
@@ -365,7 +366,7 @@ G.Alive = function(I)
 		return e and e.Health > 0;
 	end;
 G.Pos = function(I, e)
-		return (Root.Position - mode.Position).Magnitude <= e;
+		return (Root.Position - I.Position).Magnitude <= e;
 	end;
 G.Dist = function(I, e)
 		return (Root.Position - (I:FindFirstChild("HumanoidRootPart")).Position).Magnitude <= e;
@@ -10516,7 +10517,8 @@ v11:AddToggle({
             task.spawn(function()
                 local targetIsland = workspace._WorldOrigin.Locations:FindFirstChild(_G.Island)
                 if targetIsland and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                    local Root = plr.Character.HumanoidRootPart
+                    local local char = plr.Character or plr.CharacterAdded:Wait()
+    Root = char:WaitForChild('HumanoidRootPart')
                     
                     -- 1. Subida Instantânea (700 studs acima)
                     Root.CFrame = Root.CFrame * CFrame.new(0, 700, 0)
