@@ -206,8 +206,16 @@ local VirtualUser = game:GetService("VirtualUser")
 local lp = Players.LocalPlayer
 
 -- Require modules
-local Net = require(ReplicatedStorage.Modules.Net)
-local CombatUtil = require(ReplicatedStorage.Modules.CombatUtil)
+local Net
+local CombatUtil
+
+pcall(function()
+    Net = require(ReplicatedStorage.Modules.Net)
+end)
+
+pcall(function()
+    CombatUtil = require(ReplicatedStorage.Modules.CombatUtil)
+end)
 
 -- Remotes
 local hitRemote = Net:RemoteEvent("RegisterHit")
@@ -417,32 +425,6 @@ local PlayerGui = Player:WaitForChild("PlayerGui", 5)
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local Humanoid = Character:WaitForChild("Humanoid")
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-
--- EXPLOIT CHECK
-local executor = (getexecutorname and getexecutorname()) or (identifyexecutor and identifyexecutor())
-if executor then
-    if
-        string.find(executor, "Bunni") or
-        string.find(executor, "FluxusZ") or
-        string.find(executor, "Delta") or
-        string.find(executor, "Arceus") or
-        string.find(executor, "Xeno") or
-        string.find(executor, "Swift") or
-        string.find(executor, "Awp") or
-        string.find(executor, "Volcano") or
-        string.find(executor, "Argon") or
-        string.find(executor, "Macsploit") or
-        string.find(executor, "Potassium") or
-        string.find(executor, "CodeX") or
-        string.find(executor, "Velocity") or
-        string.find(executor, "Romix") or
-        string.find(executor, "Neutron")
-    then
-        print("ok")
-    else
-        game.Players.LocalPlayer:Kick("Please use Delta Exploit or PC use volcano or Exploit paid!")
-    end
-end
 
 -- ALIASES
 local ply = Players
@@ -853,8 +835,8 @@ function CheckLevel()
             if _G.AutoLevel and (CFrameMon.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 3000 then
                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(61163.8515625, 11.6796875, 1819.7841796875))
             end
-        elseif v7 == 10 or (v7 <= 474 or SelectMonster == "God\'s Guard") then
-            Ms = "God\'s Guard"
+        elseif v7 == 450 or (v7 <= 474 or SelectMonster == "God's Guard") then
+                Ms = "God's Guard"
             NameQuest = "SkyExp1Quest"
             QuestLv = 1
             NameMon = "God\'s Guard"
