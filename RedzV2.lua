@@ -1,3 +1,6 @@
+_G.Fast_Delay = 0.1 
+_G.SelectWeapon = "Cưa máy" 
+local Pos = CFrame.new(0, 20, 0) 
 _G.FastAttack = true
 
 if _G.FastAttack then
@@ -31,7 +34,7 @@ if _G.FastAttack then
     local Player = Players.LocalPlayer
 
     if not Player then
-        warn("KhĂƒÂƒĂ‚Â´ng tĂƒÂƒĂ‚Â¬m thĂƒÂ¡Ă‚ÂºĂ‚Â¥y ngĂƒÂ†Ă‚Â°ĂƒÂ¡Ă‚Â»Ă‚Âi chĂƒÂ†Ă‚Â¡i cĂƒÂ¡Ă‚Â»Ă‚Â¥c bĂƒÂ¡Ă‚Â»Ă‚Â™.")
+        warn("Không Tìm Thấy Người Chơi !")
         return
     end
 
@@ -2174,6 +2177,7 @@ return false
 end
 local player = game.Players.LocalPlayer
 function AttackNoCoolDown()
+end
     local character = player.Character
     if not character then return end
     local equippedWeapon = nil
@@ -2251,8 +2255,8 @@ spawn(function()
         Type=1
     end
 end)
-  function AutoHaki()
-    if not game:GetService("Players").LocalPlayer.Character:FindFirstChild("HasBuso") then
+function AutoHaki()
+    if game:GetService("Players").LocalPlayer.Character:FindFirstChild("HasBuso") == nil then
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
     end
 end
@@ -8798,11 +8802,12 @@ spawn(function()
                                     v.HumanoidRootPart.CanCollide = false
                                     FarmPos = v.HumanoidRootPart.CFrame
                                     MonFarm = v.Name
-                                until not _G.AutoBlazeEmberFarm or v.Humanoid.Health <= 0
-                            end
-                        end
-                    end
-                else
+                    until not _G.AutoBlazeEmberFarm or v.Humanoid.Health <= 0
+                end
+            end
+        end
+    end
+end)
                     Tween2(CFrame.new(4612.078125, 1002.283447265625, 498.2188720703125))
                 end
             end)
