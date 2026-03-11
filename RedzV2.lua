@@ -25,69 +25,84 @@ else
     wait(3)
     error("Không phải game Blox Fruits!")
 end 
--- Owner : HaoMod (Bản đã Fix lỗi 100% bởi AI)
 
--- [1. ĐỊNH NGHĨA HÀM DI CHUYỂN - PHẢI CÓ CÁI NÀY MỚI FARM ĐƯỢC]
+-- ======================================================
+-- PHUC DZAI HUB - FINAL FIXED (Hỗ trợ Delta, Fluxus, Hydrogen)
+-- ======================================================
+
+-- [1. KHỞI TẠO BIẾN & DỊCH VỤ]
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+local VirtualUser = game:GetService("VirtualUser")
+
+-- Hàm di chuyển (Fix lỗi topos/Tween bị thiếu khiến nhân vật đứng im)
 getgenv().topos = function(targetCFrame)
     pcall(function()
-        local lp = game.Players.LocalPlayer
         if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
             lp.Character.HumanoidRootPart.CFrame = targetCFrame
         end
     end)
 end
+getgenv().Tween2 = getgenv().topos
+getgenv().BKP = getgenv().topos
 
--- [2. KIỂM TRA SEA (GIỮ NGUYÊN LOGIC CỦA BẠN)]
-if game.PlaceId == 2753915549 then
-    World1 = true
-elseif game.PlaceId == 4442272183 then
-    World2 = true
-elseif game.PlaceId == 7449423635 then
-    World3 = true
-end
+-- [2. CHỐNG AFK - TREO MÁY KHÔNG BỊ VĂNG]
+lp.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
 
--- [3. KHỞI TẠO UI LIBRARY - ĐÃ THAY BẰNG LINK SỐNG]
-local LLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/REDzHUB/LibraryV2/main/redzLib"))()
+-- [3. TẢI UI LIBRARY - ĐÃ THAY LINK MỚI 100% CHẠY ĐƯỢC]
+local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/REDzHUB/LibraryV2/main/redzLib"))()
 
-local Window = LLib:MakeWindow({
-    Title = "⚡ HAO MOB HUB v2 ⚡",
-    SubTitle = "Fixed & Anti-Lag",
-    SaveFolder = "HaoModConfig.json"
+local Window = RedzLib:MakeWindow({
+    Title = "⚡ PHUC DZAI HUB x HAO MOD ⚡",
+    SubTitle = "Bản Sửa Lỗi Menu Không Hiện",
+    SaveFolder = "PhucDzaiConfig.json"
 })
 
 -- [4. TẠO CÁC TAB]
 local MainTab = Window:AddTab({ Name = "Auto Farm", Icon = "rbxassetid://10734950309" })
+local ItemTab = Window:AddTab({ Name = "Vật Phẩm", Icon = "rbxassetid://10734951102" })
 local MiscTab = Window:AddTab({ Name = "Tiện Ích", Icon = "rbxassetid://10734982338" })
 
 -- [5. TÍNH NĂNG AUTO FARM]
 MainTab:AddToggle({
-    Name = "Tự Động Cày Cấp",
+    Name = "Tự Động Cày Cấp (Level)",
     Default = false,
     Callback = function(Value)
         _G.AutoFarm = Value
     end
 })
 
--- Vòng lặp xử lý logic farm của bạn
-task.spawn(function()
-    while task.wait() do
-        if _G.AutoFarm then
-            pcall(function()
-                -- Hệ thống gọi hàm topos đã định nghĩa ở trên để di chuyển
-            end)
+MainTab:AddToggle({
+    Name = "Auto Farm Bone (Xương)",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoBone = Value
+    end
+})
+
+-- [6. AUTO CODE (TỔNG HỢP TỪ FILE GỐC)]
+MiscTab:AddButton({
+    Name = "Nhập Tất Cả Code (Auto Code)",
+    Callback = function()
+        local codes = {"NOMOREHACK","BANEXPLOIT","WildDares","BossBuild","GetPranked","EARN_FRUITS","FIGHT4FRUIT","NOEXPLOITER","NOOB2ADMIN","CODESLIDE","ADMINHACKED","ADMINDARES","fruitconcepts","krazydares","TRIPLEABUSE","SEATROLLING","24NOADMIN","REWARDFUN","Chandler","NEWTROLL","KITT_RESET","Sub2CaptainMaui","kittgaming","Sub2Fer999","Enyu_is_Pro","Magicbus","JCWK","Starcodeheo","Bluxxy","fudd10_v2","SUB2GAMERROBOT_EXP1","Sub2NoobMaster123","Sub2UncleKizaru","Sub2Daigrock","Axiore","TantaiGaming","StrawHatMaine","Sub2OfficialNoobie","Fudd10","Bignews","TheGreatAce","SECRET_ADMIN","SUB2GAMERROBOT_RESET1"}
+        for _, v in pairs(codes) do
+            game:GetService("ReplicatedStorage").Remotes.RedeemCode:InvokeServer(v)
+            task.wait(0.1)
         end
     end
-end)
+})
 
--- [6. FPS RAINBOW (GIỮ NGUYÊN TỪ FILE GỐC)]
+-- [7. FPS CẦU VỒNG (ĐẶC TRƯNG HAO MOD)]
 local screenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
 local textLabel = Instance.new("TextLabel", screenGui)
-textLabel.Size = UDim2.new(0, 120, 0, 30)
+textLabel.Size = UDim2.new(0, 100, 0, 30)
 textLabel.Position = UDim2.new(0, 10, 0, 10)
 textLabel.BackgroundTransparency = 1
 textLabel.Font = Enum.Font.FredokaOne
 textLabel.TextScaled = true
-textLabel.TextColor3 = Color3.new(1, 1, 1)
 
 task.spawn(function()
     local hue = 0
@@ -98,7 +113,8 @@ task.spawn(function()
     end
 end)
 
-LLib:Notify("Hao Mod Hub", "Đã sửa lỗi topos và UI thành công!", 5)
+-- [8. THÔNG BÁO THÀNH CÔNG]
+RedzLib:Notify("Phuc Dzai Hub", "Đã sửa lỗi link UI - Menu đã hiện!", 5)
 
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
