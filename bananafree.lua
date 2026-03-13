@@ -1,5 +1,5 @@
 local L_1_ = {}
-L_1_[3] = "ColorCorrectionEffect"
+L_1_[3] = table["concat"]
 if not game:IsLoaded() then
 	repeat
 		game["Loaded"]:Wait()
@@ -82,8 +82,8 @@ L_1_[17] = (L_1_[5]:WaitForChild("Data")):WaitForChild("Fragments")
 L_1_[1] = (L_1_[5]:WaitForChild("Data")):WaitForChild("Beli")
 L_1_[48] = require(L_1_[7]["Modules"]["Net"])
 L_1_[16] = game:GetService("Lighting")
-L_1_[2] = game:GetService("VirtualInputManager")
-L_1_[33] = game:GetService("VirtualUser")
+L_1_[2] = game:service("VirtualInputManager")
+L_1_[33] = game:service("VirtualUser")
 L_1_[4] = game:GetService("CoreGui")
 L_1_[45] = {}
 task["spawn"](function()
@@ -205,7 +205,9 @@ task["spawn"](function()
 			for L_19_forvar0, L_20_forvar1 in pairs(L_15_[4]:GetDescendants()) do
 				local L_21_ = {}
 				L_21_[1], L_21_[2] = L_19_forvar0, L_20_forvar1
-				if L_21_[2]:IsA("BlurEffect") or L_21_[2]:IsA("SunRaysEffect") or L_21_[2]:IsA("ColorCorrectionEffect")
+				if L_21_[2]:IsA("BlurEffect") or L_21_[2]:IsA("SunRaysEffect") or L_21_[2]:IsA(L_1_[3]({
+					"ColorCorrectionEffec",
+					"t"
 				})) or L_21_[2]:IsA("BloomEffect") or L_21_[2]:IsA("DepthOfFieldEffect") then
 					L_21_[2]["Enabled"] = false
 				end
@@ -321,7 +323,7 @@ L_NEW_STROKE["Parent"] = L_NEW_FRAME
 L_NEW_TEXT = Instance["new"]("TextLabel")
 L_NEW_TEXT["Size"] = UDim2["new"](1, 0, 1, 0)
 L_NEW_TEXT["BackgroundTransparency"] = 1
-L_NEW_TEXT["Text"] = "Phucdzai Hub"
+L_NEW_TEXT["Text"] = "TikTok: @phuc_2k13"
 L_NEW_TEXT["TextColor3"] = Color3["fromRGB"](255, 0, 0)
 L_NEW_TEXT["TextSize"] = 14
 L_NEW_TEXT["Font"] = Enum["Font"]["GothamBold"]
@@ -364,7 +366,7 @@ function CheckLevel2()
 	local L_28_ = {}
 	L_28_[2] = (game:GetService("Players"))["LocalPlayer"]["Data"]["Level"]["Value"]
 	if Old_World then
-		if game["Players"]["LocalPlayer"]["Data"]["Level"]["Value"] == 1 or game["Players"]["LocalPlayer"]["Data"]["Level"]["Value"] <= 9 SelectMonster = SelectMonster or "" then
+		if game["Players"]["LocalPlayer"]["Data"]["Level"]["Value"] == 1 or game["Players"]["LocalPlayer"]["Data"]["Level"]["Value"] <= 9 or SelectMonster == "" then
 			Ms = "Bandit"
 			NameQuest = "BanditQuest1"
 			QuestLv = 1
