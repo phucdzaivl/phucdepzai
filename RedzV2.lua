@@ -1,4 +1,3 @@
-
 hookfunction(require(game:GetService("ReplicatedStorage").Effect.Container.Death), function()
     -- empty block
 end)
@@ -9661,34 +9660,10 @@ v496:AddButton({Title = "Server Hop", Callback = function()
     Hop()
 end})
 return
-function FastAttackFruit()
-    if getgenv().IsUsingFastAttack then return end
-    
-    local char = player.Character
-    local tool = char and char:FindFirstChildOfClass("Tool")
-    
-    if tool and tool.ToolTip == "Blox Fruit" and HasM1Fruit() then
-        getgenv().IsUsingFastAttack = true
-        
-        for i = 1, getgenv().AutoBounty.Combat.FastAttackSpeed or 12 do
-            task.spawn(function()
-                pcall(function()
-                    tool:Activate()
-                    
-                    local remote = tool:FindFirstChild("LeftClickRemote") or tool:FindFirstChild("Remote")
-                    if remote then
-                        remote:FireServer(Vector3.new(0,0,0), 1)
-                    end
-                    
-                    Net:InvokeServer("Attack", {
-                        [1] = getgenv().targ and getgenv().targ.Character and getgenv().targ.Character:FindFirstChild("HumanoidRootPart")
-                    })
-                end)
-            end)
-            
-            task.wait(0.01) 
-        end
-        
-        getgenv().IsUsingFastAttack = false
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            FastAttackFruit()
+        end)
     end
-end
+end)
