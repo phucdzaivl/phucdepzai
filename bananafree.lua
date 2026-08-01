@@ -6,6 +6,7 @@ repeat
 until game.Players.LocalPlayer.Character or tick() - start > 10 
 
 if not game.Players.LocalPlayer.Character then
+    warn("⚠️ Character not loaded after 10s")
     return
 end
 
@@ -1594,17 +1595,40 @@ task.spawn(function()
 end)
 
 -- ========================================
--- UI BANANA CŨ – ĐÃ SỬA LỖI + PHÍM V
+-- UI – LOADER CHÍNH (ĐÃ SỬA, KHÔNG TRÙNG LẶP)
 -- ========================================
-local Library = loadstring(game:HttpGet("https://pastefy.app/kyYdSx0A/raw"))()
+local Library
+local success, result = pcall(function()
+    return loadstring(game:HttpGet("https://pastefy.app/kyYdSx0A/raw"))()
+end)
 
-local W = Library.CreateWindow({
+if success and result then
+    Library = result
+else
+    warn("Không load được Library từ pastefy, thử dùng Orion...")
+    
+    local success2, orion = pcall(function()
+        return loadstring(game:HttpGet("https://raw.githubusercontent.com/NguyenThang2007/Roblox-UI-Libs/main/OrionLibrary.lua"))()
+    end)
+    
+    if success2 and orion then
+        Library = orion
+    else
+        warn("CRITICAL: Không thể load bất kỳ UI library nào!")
+        return
+    end
+end
+
+if not Library then return end
+
+local W = Library:CreateWindow({
     Title = "Banana Cat Hub",
     Subtitle = "Made By Phuc Ngo",
     Image = "rbxassetid://5009915795"
 })
 
--- Xử lý phím V để bật/tắt menu
+W:Show()
+
 local UIS = game:GetService("UserInputService")
 local menuVisible = true
 UIS.InputBegan:Connect(function(input, gameProcessed)
@@ -1625,7 +1649,7 @@ local Main = W:AddTab("Main")
 local Teleport = W:AddTab("Teleport")
 local Set = W:AddTab("Config")
 
--- Shop (dùng AddGroupbox)
+-- Shop
 local SG = Shop:AddGroupbox("Fighting Styles")
 local shopData = {
     {"Black Leg", CFrame.new(1065, 15, 1565), {"BuyBlackLeg"}},
@@ -1657,34 +1681,22 @@ local AutoHakiGroup = Shop:AddGroupbox("Auto Buy Haki")
 AutoHakiGroup:AddToggle("AutoBuyGeppo", {
     Title = "Auto Buy Geppo ($10,000)",
     Default = getgenv().AutoBuyGeppo or false,
-    Callback = function(v)
-        getgenv().AutoBuyGeppo = v
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().AutoBuyGeppo = v; SaveConfig() end
 })
 AutoHakiGroup:AddToggle("AutoBuyBuso", {
     Title = "Auto Buy Buso Haki ($25,000)",
     Default = getgenv().AutoBuyBuso or false,
-    Callback = function(v)
-        getgenv().AutoBuyBuso = v
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().AutoBuyBuso = v; SaveConfig() end
 })
 AutoHakiGroup:AddToggle("AutoBuySoru", {
     Title = "Auto Buy Soru ($25,000)",
     Default = getgenv().AutoBuySoru or false,
-    Callback = function(v)
-        getgenv().AutoBuySoru = v
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().AutoBuySoru = v; SaveConfig() end
 })
 AutoHakiGroup:AddToggle("AutoBuyObservation", {
     Title = "Auto Buy Observation Haki ($750,000)",
     Default = getgenv().AutoBuyObservation or false,
-    Callback = function(v)
-        getgenv().AutoBuyObservation = v
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().AutoBuyObservation = v; SaveConfig() end
 })
 
 -- Server
@@ -1704,11 +1716,7 @@ FG:AddDropdown("FarmModeSelect", {
     Title = "Mode",
     Options = {"Level Farm", "Aura Farm"},
     Default = getgenv().FarmMode or "Level Farm",
-    Callback = function(v)
-        getgenv().FarmMode = v
-        auraTarget = nil
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().FarmMode = v; auraTarget = nil; SaveConfig() end
 })
 FG:AddToggle("AutoFarmToggle", {
     Title = "Auto Farm",
@@ -1737,23 +1745,11 @@ Teleport:AddSection({Title = "Teleport Island"})
 
 local islandList = {}
 if World1 then
-    islandList = {
-        "WindMill", "Marine", "Middle Town", "Jungle", "Pirate Village", "Desert", "Snow Island",
-        "MarineFord", "Colosseum", "Sky Island 1", "Sky Island 2", "Sky Island 3", "Prison",
-        "Magma Village", "Under Water Island", "Fountain City", "Shank Room", "Mob Island"
-    }
+    islandList = {"WindMill", "Marine", "Middle Town", "Jungle", "Pirate Village", "Desert", "Snow Island", "MarineFord", "Colosseum", "Sky Island 1", "Sky Island 2", "Sky Island 3", "Prison", "Magma Village", "Under Water Island", "Fountain City", "Shank Room", "Mob Island"}
 elseif World2 then
-    islandList = {
-        "The Cafe", "Frist Spot", "Dark Area", "Flamingo Mansion", "Flamingo Room", "Green Zone",
-        "Factory", "Colossuim", "Zombie Island", "Two Snow Mountain", "Punk Hazard", "Cursed Ship",
-        "Ice Castle", "Forgotten Island", "Ussop Island", "Mini Sky Island"
-    }
+    islandList = {"The Cafe", "Frist Spot", "Dark Area", "Flamingo Mansion", "Flamingo Room", "Green Zone", "Factory", "Colossuim", "Zombie Island", "Two Snow Mountain", "Punk Hazard", "Cursed Ship", "Ice Castle", "Forgotten Island", "Ussop Island", "Mini Sky Island"}
 elseif World3 then
-    islandList = {
-        "Mansion", "Port Town", "Great Tree", "Castle On The Sea", "MiniSky", "Hydra Island",
-        "Floating Turtle", "Haunted Castle", "Ice Cream Island", "Peanut Island", "Cake Island",
-        "Cocoa Island", "Candy Island", "Tiki Outpost", "Dragon Dojo"
-    }
+    islandList = {"Mansion", "Port Town", "Great Tree", "Castle On The Sea", "MiniSky", "Hydra Island", "Floating Turtle", "Haunted Castle", "Ice Cream Island", "Peanut Island", "Cake Island", "Cocoa Island", "Candy Island", "Tiki Outpost", "Dragon Dojo"}
 else
     islandList = {"Spawn"}
 end
@@ -1762,18 +1758,13 @@ Teleport:AddDropdown("IslandSelect", {
     Title = "Select Island",
     Options = islandList,
     Default = islandList[1] or "",
-    Callback = function(v)
-        _G.SelectIsland = v
-    end
+    Callback = function(v) _G.SelectIsland = v end
 })
 
 Teleport:AddToggle("AutoTweenIsland", {
     Title = "Auto Tween To Island",
     Default = false,
-    Callback = function(v)
-        _G.TeleportIsland = v
-        if not v then stopTweenMovement() end
-    end
+    Callback = function(v) _G.TeleportIsland = v; if not v then stopTweenMovement() end end
 })
 
 Teleport:AddSection({Title = "Teleport Sea"})
@@ -1785,21 +1776,16 @@ Teleport:AddButton({Name = "Sea 3", Callback = function() pcall(function() Repli
 Teleport:AddSection({Title = "Portal Teleport"})
 
 local portalList = {}
-if World1 then
-    portalList = {"Sky", "UnderWater"}
-elseif World2 then
-    portalList = {"SwanRoom", "Cursed Ship"}
-elseif World3 then
-    portalList = {"Castle On The Sea", "Mansion Cafe", "Hydra Teleport", "Canvendish Room", "Temple of Time"}
+if World1 then portalList = {"Sky", "UnderWater"}
+elseif World2 then portalList = {"SwanRoom", "Cursed Ship"}
+elseif World3 then portalList = {"Castle On The Sea", "Mansion Cafe", "Hydra Teleport", "Canvendish Room", "Temple of Time"}
 end
 
 Teleport:AddDropdown("PortalSelect", {
     Title = "Select Portal",
     Options = portalList,
     Default = portalList[1] or "",
-    Callback = function(v)
-        _G.SelectedPortal = v
-    end
+    Callback = function(v) _G.SelectedPortal = v end
 })
 
 Teleport:AddButton({
@@ -1831,10 +1817,7 @@ SG3:AddDropdown("WeaponSelect", {
     Title = "Weapon",
     Options = {"Melee", "Sword", "Gun", "Blox Fruit"},
     Default = getgenv().SelectWeapon or "Melee",
-    Callback = function(v)
-        getgenv().SelectWeapon = v
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().SelectWeapon = v; SaveConfig() end
 })
 SG3:AddButton({
     Name = "Stop Tween",
@@ -1850,42 +1833,27 @@ SG3:AddButton({
 SG3:AddToggle("BringMobToggle", {
     Title = "Bring Mob",
     Default = getgenv().BringMob or false,
-    Callback = function(v)
-        getgenv().BringMob = v
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().BringMob = v; SaveConfig() end
 })
 SG3:AddToggle("AutoHakiToggle", {
     Title = "Auto Buso Haki",
     Default = getgenv().AutoHakiBuso ~= false,
-    Callback = function(v)
-        getgenv().AutoHakiBuso = v
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().AutoHakiBuso = v; SaveConfig() end
 })
 SG3:AddToggle("AutoRaceV3", {
     Title = "Auto Race V3",
     Default = getgenv().AutoRaceV3 or false,
-    Callback = function(v)
-        getgenv().AutoRaceV3 = v
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().AutoRaceV3 = v; SaveConfig() end
 })
 SG3:AddToggle("AutoRaceV4", {
     Title = "Auto Race V4",
     Default = getgenv().AutoRaceV4 or false,
-    Callback = function(v)
-        getgenv().AutoRaceV4 = v
-        SaveConfig()
-    end
+    Callback = function(v) getgenv().AutoRaceV4 = v; SaveConfig() end
 })
 SG3:AddToggle("ToggleKeybind", {
     Title = "Toggle GUI V",
     Default = _G.ToggleKeybind ~= false,
-    Callback = function(v)
-        _G.ToggleKeybind = v
-        SaveConfig()
-    end
+    Callback = function(v) _G.ToggleKeybind = v; SaveConfig() end
 })
 SG3:AddToggle("WalkOnWater", {
     Title = "Walk on Water",
@@ -1905,7 +1873,6 @@ SG3:AddToggle("WalkOnWater", {
 SG3:AddButton({Name = "Save Config", Callback = function() SaveConfig() end})
 SG3:AddButton({Name = "Destroy GUI", Callback = function() if Library.DestroyUI then Library:DestroyUI() end end})
 
--- Thông báo
 pcall(function()
     Library:Notify({
         Title = "Loaded!",
