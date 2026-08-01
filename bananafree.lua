@@ -1,9 +1,9 @@
 -- =============================================
--- UI BANANA CŨ (pastefy.app/kyYdSx0A/raw) – ĐÃ SỬA LỖI
+-- UI BANANA CŨ (pastefy.app/kyYdSx0A/raw) – CHUẨN
 -- =============================================
 local Library = loadstring(game:HttpGet("https://pastefy.app/kyYdSx0A/raw"))()
 
-local W = Library:CreateWindow({
+local W = Library.CreateWindow({
     Title = "Banana Cat Hub",
     Subtitle = "Made By Phuc Ngo",
     Image = "rbxassetid://5009915795"
@@ -37,16 +37,8 @@ for _, d in ipairs(shopData) do
         Callback = function()
             topos(d[2])
             task.wait(0.5)
-            if d[3] then
-                pcall(function()
-                    ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(d[3]))
-                end)
-            end
-            if d[4] then
-                pcall(function()
-                    ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(d[4]))
-                end)
-            end
+            if d[3] then pcall(function() ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(d[3])) end) end
+            if d[4] then pcall(function() ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(d[4])) end) end
         end
     })
 end
@@ -113,8 +105,7 @@ FG:AddToggle("AutoFarmToggle", {
     Default = getgenv().AutoFarm or false,
     Callback = function(v)
         getgenv().AutoFarm = v
-        if v then
-            getgenv().BringMob = true
+        if v then getgenv().BringMob = true
         else
             stopAttackMovement()
             stopTweenMovement()
@@ -125,11 +116,7 @@ FG:AddToggle("AutoFarmToggle", {
             FarmPos = nil
             MonFarm = nil
             local h = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
-            if h then
-                h.Anchored = false
-                h.Velocity = Vector3.zero
-                h.AssemblyLinearVelocity = Vector3.zero
-            end
+            if h then h.Anchored = false; h.Velocity = Vector3.zero; h.AssemblyLinearVelocity = Vector3.zero end
         end
         SaveConfig()
     end
@@ -211,24 +198,15 @@ Teleport:AddButton({
         local p = _G.SelectedPortal
         if not p then return end
         local cf = nil
-        if p == "Sky" then
-            cf = Vector3.new(-7894, 5547, -380)
-        elseif p == "UnderWater" then
-            cf = Vector3.new(61163, 11, 1819)
-        elseif p == "SwanRoom" then
-            cf = Vector3.new(2285, 15, 905)
-        elseif p == "Cursed Ship" then
-            cf = Vector3.new(923, 126, 32852)
-        elseif p == "Castle On The Sea" then
-            cf = Vector3.new(-5097.93164, 316.447021, -3142.66602)
-        elseif p == "Mansion Cafe" then
-            cf = Vector3.new(-12471.169921875, 374.94024658203, -7551.677734375)
-        elseif p == "Hydra Teleport" then
-            cf = Vector3.new(5643.4526367188, 1013.0858154297, -340.51025390625)
-        elseif p == "Canvendish Room" then
-            cf = Vector3.new(5314.5463867188, 22.562219619751, -127.06755065918)
-        elseif p == "Temple of Time" then
-            cf = Vector3.new(28310.0234, 14895.1123, 109.456741)
+        if p == "Sky" then cf = Vector3.new(-7894, 5547, -380)
+        elseif p == "UnderWater" then cf = Vector3.new(61163, 11, 1819)
+        elseif p == "SwanRoom" then cf = Vector3.new(2285, 15, 905)
+        elseif p == "Cursed Ship" then cf = Vector3.new(923, 126, 32852)
+        elseif p == "Castle On The Sea" then cf = Vector3.new(-5097.93164, 316.447021, -3142.66602)
+        elseif p == "Mansion Cafe" then cf = Vector3.new(-12471.169921875, 374.94024658203, -7551.677734375)
+        elseif p == "Hydra Teleport" then cf = Vector3.new(5643.4526367188, 1013.0858154297, -340.51025390625)
+        elseif p == "Canvendish Room" then cf = Vector3.new(5314.5463867188, 22.562219619751, -127.06755065918)
+        elseif p == "Temple of Time" then cf = Vector3.new(28310.0234, 14895.1123, 109.456741)
         end
         if cf then
             pcall(function() ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", cf) end)
@@ -256,10 +234,7 @@ SG3:AddButton({
         setCharacterNoClip(false)
         getgenv().AutoFarm = false
         local h = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
-        if h then
-            h.Anchored = false
-            h.Velocity = Vector3.zero
-        end
+        if h then h.Anchored = false; h.Velocity = Vector3.zero end
     end
 })
 SG3:AddToggle("BringMobToggle", {
@@ -310,11 +285,8 @@ SG3:AddToggle("WalkOnWater", {
         pcall(function()
             local water = Workspace:FindFirstChild("Map") and Workspace.Map:FindFirstChild("WaterBase-Plane")
             if water then
-                if v then
-                    water.Size = Vector3.new(1000, 112, 1000)
-                else
-                    water.Size = Vector3.new(1000, 80, 1000)
-                end
+                if v then water.Size = Vector3.new(1000, 112, 1000)
+                else water.Size = Vector3.new(1000, 80, 1000) end
             end
         end)
         SaveConfig()
