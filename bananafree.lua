@@ -6,7 +6,6 @@ repeat
 until game.Players.LocalPlayer.Character or tick() - start > 10 
 
 if not game.Players.LocalPlayer.Character then
-    warn("⚠️ Character not loaded after 10s")
     return
 end
 
@@ -1570,28 +1569,24 @@ task.spawn(function()
             if getgenv().AutoBuyGeppo and beli >= 10000 then
                 if not char:FindFirstChild("Geppo") and not backpack:FindFirstChild("Geppo") then
                     ReplicatedStorage.Remotes.CommF_:InvokeServer("BuyHaki", "Geppo")
-                    print("✅ Đã mua Geppo")
                 end
             end
             
             if getgenv().AutoBuyBuso and beli >= 25000 then
                 if not char:FindFirstChild("HasBuso") and not backpack:FindFirstChild("HasBuso") then
                     ReplicatedStorage.Remotes.CommF_:InvokeServer("BuyHaki", "Buso")
-                    print("✅ Đã mua Buso Haki")
                 end
             end
             
             if getgenv().AutoBuySoru and beli >= 25000 then
                 if not char:FindFirstChild("Soru") and not backpack:FindFirstChild("Soru") then
                     ReplicatedStorage.Remotes.CommF_:InvokeServer("BuyHaki", "Soru")
-                    print("✅ Đã mua Soru")
                 end
             end
             
             if getgenv().AutoBuyObservation and beli >= 750000 then
                 if not char:FindFirstChild("VisionRadius") and not backpack:FindFirstChild("VisionRadius") then
                     ReplicatedStorage.Remotes.CommF_:InvokeServer("KenTalk", "Buy")
-                    print("✅ Đã mua Observation Haki")
                 end
             end
         end)
@@ -1599,9 +1594,8 @@ task.spawn(function()
 end)
 
 -- ========================================
--- UI BANANA CŨ (pastefy.app/kyYdSx0A/raw) – CHUẨN
+-- UI BANANA CŨ – ĐÃ SỬA LỖI + PHÍM V
 -- ========================================
-
 local Library = loadstring(game:HttpGet("https://pastefy.app/kyYdSx0A/raw"))()
 
 local W = Library.CreateWindow({
@@ -1911,6 +1905,7 @@ SG3:AddToggle("WalkOnWater", {
 SG3:AddButton({Name = "Save Config", Callback = function() SaveConfig() end})
 SG3:AddButton({Name = "Destroy GUI", Callback = function() if Library.DestroyUI then Library:DestroyUI() end end})
 
+-- Thông báo
 pcall(function()
     Library:Notify({
         Title = "Loaded!",
