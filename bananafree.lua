@@ -1,3 +1,6 @@
+-- =============================================
+-- UI BANANA CŨ (pastefy.app/kyYdSx0A/raw) – ĐÃ SỬA LỖI
+-- =============================================
 local Library = loadstring(game:HttpGet("https://pastefy.app/kyYdSx0A/raw"))()
 
 local W = Library:CreateWindow({
