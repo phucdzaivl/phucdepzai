@@ -1,4 +1,5 @@
 repeat task.wait() until game:IsLoaded()
+
 local start = tick()
 repeat 
     task.wait(0.5) 
@@ -1609,14 +1610,29 @@ local W = Library.CreateWindow({
     Image = "rbxassetid://5009915795"
 })
 
+-- Xử lý phím V để bật/tắt menu
+local UIS = game:GetService("UserInputService")
+local menuVisible = true
+UIS.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.V then
+        menuVisible = not menuVisible
+        if menuVisible then
+            W:Show()
+        else
+            W:Hide()
+        end
+    end
+end)
+
 local Shop = W:AddTab("Shop")
 local Svr = W:AddTab("Server")
 local Main = W:AddTab("Main")
 local Teleport = W:AddTab("Teleport")
 local Set = W:AddTab("Config")
 
--- Shop
-local SG = Shop:AddLeftGroupbox("Fighting Styles")
+-- Shop (dùng AddGroupbox)
+local SG = Shop:AddGroupbox("Fighting Styles")
 local shopData = {
     {"Black Leg", CFrame.new(1065, 15, 1565), {"BuyBlackLeg"}},
     {"Fishman Karate", CFrame.new(61150, 18, 1560), {"BuyFishmanKarate"}},
@@ -1643,7 +1659,7 @@ for _, d in ipairs(shopData) do
     })
 end
 
-local AutoHakiGroup = Shop:AddLeftGroupbox("Auto Buy Haki")
+local AutoHakiGroup = Shop:AddGroupbox("Auto Buy Haki")
 AutoHakiGroup:AddToggle("AutoBuyGeppo", {
     Title = "Auto Buy Geppo ($10,000)",
     Default = getgenv().AutoBuyGeppo or false,
@@ -1678,18 +1694,18 @@ AutoHakiGroup:AddToggle("AutoBuyObservation", {
 })
 
 -- Server
-local IG = Svr:AddLeftGroupbox("Player Info")
+local IG = Svr:AddGroupbox("Player Info")
 IG:AddLabel("Player: " .. Player.Name)
 local gn = "Unknown"
 pcall(function() gn = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name or "Unknown" end)
 IG:AddLabel("Game: " .. gn)
 
-local SG2 = Svr:AddLeftGroupbox("Server Tools")
+local SG2 = Svr:AddGroupbox("Server Tools")
 SG2:AddButton({Name = "Copy Game ID", Callback = function() if setclipboard then setclipboard(tostring(game.PlaceId)) end end})
 SG2:AddButton({Name = "Rejoin", Callback = function() SaveConfig(); game:GetService("TeleportService"):Teleport(game.PlaceId, Player) end})
 
 -- Main
-local FG = Main:AddLeftGroupbox("Main Farms")
+local FG = Main:AddGroupbox("Main Farms")
 FG:AddDropdown("FarmModeSelect", {
     Title = "Mode",
     Options = {"Level Farm", "Aura Farm"},
@@ -1816,7 +1832,7 @@ Teleport:AddButton({
 })
 
 -- Config
-local SG3 = Set:AddLeftGroupbox("UI Settings")
+local SG3 = Set:AddGroupbox("UI Settings")
 SG3:AddDropdown("WeaponSelect", {
     Title = "Weapon",
     Options = {"Melee", "Sword", "Gun", "Blox Fruit"},
