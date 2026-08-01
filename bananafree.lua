@@ -1,7 +1,4 @@
 repeat task.wait() until game:IsLoaded()
-
-print("Banana Cat Hub")
-
 local start = tick()
 repeat 
     task.wait(0.5) 
