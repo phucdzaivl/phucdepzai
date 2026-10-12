@@ -208,6 +208,7 @@ __VxezeHubMain = function()
 	local localPlayer
 	localPlayer = game.Players.LocalPlayer
 	local getupvalue = debug.getupvalue
+	local RunService = game:GetService("RunService")
 	getgenv().getupvalue = getupvalue
 	local getupvalues_ = debug.getupvalues
 	getgenv().getupvalues = getupvalues_
@@ -810,7 +811,7 @@ __VxezeHubMain = function()
 		end
 
 		fn(-3037147829324948, 0, "\255L\189\193\155L\223O\236\166}\30d\12\186.\222$A\212H'-\1810o~\140Kc\16K\244\219|!\205\24\191|\163$\240\n+tձ\244\27\192\29\249\225C\237\243I\150\175\137L\169\166\15\172\206e!\232\234\167\195\18\134[\224ؿ\4%j#", nil --[[ the caller's registers ]], 55)
-		tbl.SourceUrl = "\255L\189\193\155L\223O\236\166}\30d\12\186.\222$A\212H'-\1810o~\140Kc\16K\244\219|!\205\24\191|\163$\240\n+tձ\244\27\192\29\249\225C\237\243I\150\175\137L\169\166\15\172\206e!\232\234\167\195\18\134[\224ؿ\4%j#"
+		tbl.SourceUrl = "https://raw.githubusercontent.com/[user]/[repo]/main/VindUI.luau"
 
 		local function fn2(arg, arg2, arg3, arg4, arg5)
 			local tbl2 = {}
@@ -1391,7 +1392,7 @@ __VxezeHubMain = function()
 		end
 
 		fn2(-4566195987090404, 0, "\182\189\"r\131\2\193\154\169:F]\196<\30\20\31\28t\255\216\28\158\13333\215}\183\185\153\21\222؎\143@8\177\27\222W>\242z\251[\219܊\30\227XJ\252\7݂f\229bݯB\22N", nil --[[ the caller's registers ]], 55)
-		tbl.SourceMirror = "\182\189\"r\131\2\193\154\169:F]\196<\30\20\31\28t\255\216\28\158\13333\215}\183\185\153\21\222؎\143@8\177\27\222W>\242z\251[\219܊\30\227XJ\252\7݂f\229bݯB\22N"
+		tbl.SourceMirror = "https://cdn.jsdelivr.net/gh/user/repo@main/VindUI.luau"
 		tbl.ButtonImage = "rbxassetid://87167480222237"
 
 		tbl.Groups = {
@@ -1469,9 +1470,12 @@ __VxezeHubMain = function()
 
 	VxezeReportError = function(arg, arg2)
 		local str = tostring(arg) .. ": " .. tostring(arg2)
-		if VxezeUI.Errors[str] then
-			return
+		if not VxezeUI then 
+			print("[Vxeze Hub] " .. str)
+			return 
 		end
+		VxezeUI.Errors = VxezeUI.Errors or {}
+		if VxezeUI.Errors[str] then return end
 		VxezeUI.Errors[str] = true
 		print("[Vxeze Hub] " .. str)
 	end
@@ -2303,7 +2307,7 @@ __VxezeHubMain = function()
 			vxezeHubButton:Destroy()
 		end
 
-		local accent = VxezeUI.Library.Theme.Accent
+		local accent = VxezeUI.Library.Theme and VxezeUI.Library.Theme.Accent or Color3.fromRGB(0, 170, 255)
 		local TweenService = game:GetService("TweenService")
 		local screenGui = Instance.new("ScreenGui")
 		screenGui.Name = "Vxeze Hub Button"
@@ -2679,8 +2683,13 @@ __VxezeHubMain = function()
 			tbl.ToggleKeybind = false
 			v3.Window = createWindow(v4, tbl)
 			VxezeBindToggleKey(Enum.KeyCode[Settings["Interface Minimize Key"] or "LeftControl"])
-			VxezeUI.Window:Close()
-			task.delay(20, VxezeShowWindow)
+			VxezeShowWindow = function()
+				local window = VxezeUI.Window
+				if window and not VxezeUI.Shown then
+					VxezeUI.Shown = true
+					window:Open()
+				end
+			end
 			VxezeUI.Tabs = {}
 			VxezeUI.Panes = {}
 
@@ -2868,9 +2877,9 @@ __VxezeHubMain = function()
 		return FruitStockCache.data or {}
 	end
 
-	getgenv().tablefruitausea3 = {}
-	whitelistedfruit = {}
-	TableDevilFruit = {}
+	getgenv().tablefruitausea3 = getgenv().tablefruitausea3 or {}
+	whitelistedfruit = whitelistedfruit or {}
+	TableDevilFruit = TableDevilFruit or {}
 
 	LoadFruitTables = function()
 		local v3 = next
@@ -5688,7 +5697,10 @@ __VxezeHubMain = function()
 			ServerBrowser.panel.Open()
 			return
 		end
-		local v3 = VxezeUI.Window:AddPanelTab({ Name = "Server Browser", Icon = "Lucide:globe", UseElements = true })
+		local ok, v3 = pcall(function()
+			return VxezeUI.Window:AddPanelTab({ Name = "Server Browser", Icon = "Lucide:globe", UseElements = true })
+		end)
+		if not ok then return end
 		ServerBrowser.panel = v3
 		local tab = v3.Tab
 		tab:AddSection("Server Browser", "Lucide:globe")
@@ -6884,7 +6896,19 @@ __VxezeHubMain = function()
 	SetNoClip = function(n)getgenv().noclip=n;local L= localPlayer .Character;if not L then return;end;local c,U=L:FindFirstChild("HumanoidRootPart"),L:FindFirstChildOfClass("Humanoid");if not n then for n in pairs(NoclipChanged)do if n.Parent then n.CanCollide=true;end;end;table.clear(NoclipChanged);if U then U.PlatformStand=false;end;if c and(c:FindFirstChild("FloatForce"))and not ToggleNoclip()then c.FloatForce:Destroy();end;end;end
 	NoclipCache = { value = false, checked = 0 }
 	ToggleNoclip = function()if TweenManager and tick()<(TweenManager.PauseUntil or 0)then return false;end;if os.clock()-NoclipCache.checked>0.1 then NoclipCache.checked=os.clock();NoclipCache.value=ComputeNoclip()==true;end;return NoclipCache.value;end
-	ComputeNoclip = function()if Settings["Start Farm"]or Settings["Auto Present Event"]or Settings["Auto Celestial Soldier"]or Settings["Auto Rip Commander"]or Settings["Auto Event Halloween"]or Settings["Auto Attack Dungeon"]or Settings["Auto Fishing"]or Settings["Auto Collect Fruits"]or Settings["Auto Factory"]or Settings["Auto Pirate Raid"]or Settings["Auto Elite Hunter"]or Settings["Auto Touch Pad Haki"]or Settings["Auto Summon Rip Indra"]or Settings["Attack Rip Indra"]or Settings["Attack Soul Reaper"]or Settings["Attack Dough King"]or Settings["Attack Darkbeard"]or Settings["Auto Raid"]or Settings["Auto Sea Event"]or Settings["Auto Shipwright"]or Settings["Teleport Acient Clock"]or TempleTeleporting or Settings["Auto Magnet Event"]or Settings["Auto Secret Quest"]or Settings["Auto Upgrade Race V2-V3"]or Settings["Auto Trial"]or Settings["Auto Get Ghoul"]or Settings["Auto Get Cyborg"]or Settings["Auto Pull Lever"]or  notsave ["Teleport Mirage"]or  notsave ["Teleport To Island"]or  notsave ["Teleport To Npc"]or  notsave ["Teleport Prehistoric Island"]or  notsave ["Sanguine Art"]or  notsave ["God Human"]or  notsave ["Dragon Talon"]or  notsave ["Electric Claw"]or  notsave ["Sharkman Karate"]or  notsave ["Death Step"]or  notsave .SuperHuman or  notsave .DragonClaw or  notsave .Electro or  notsave ["Fishman Karate"]or  notsave ["Black Leg"]or Settings["Teleport To Kitsune Island"]or Settings["Auto Spawn Kitsune Island"]or Settings["Auto Collect Soul Ember"]or Settings["Auto Summon Soul Ember"]or Settings["Auto Attack Leviathan"]or Settings["Auto Soul Guitar"]or Settings["Auto CDK"]or Settings["Auto Yama"]or Settings["Auto Tushita"]or Settings["Auto Upgrade Sword Inventory"]or Settings["Teleport Player"]or Settings["Auto Collect Chests"]or Settings["Auto Farm Observation"]or Settings["Auto Upgrade Gun Inventory"]or Settings["Kill Boss"]or Settings["Farm Mob"]or Settings["Auto Observation v2"]or Settings["Auto New World"]or Settings["Auto Saber"]or Settings["Auto Third World"]or Settings["Tween Safe if have Items"]or Settings["Teleport Frozen Dimension"]or Settings["Auto Yoru Mini"]or Settings["Auto Dojo Trainer"]or Settings["Auto Dragon Hunter"]or Settings["Auto Crafting Volcanic Magnet"]or Settings["Auto Find Prehistoric Island"]or Settings["Auto Find Mirage"]or Settings["Auto Event Prehistoric Island"]or Settings["Auto Collect Bone"]or Settings["Auto Collect Berries"]or Settings["Auto Upgrade Race V2-V3 Draco"]or Settings["Auto Trial Draco"]or Settings["Auto Get Rainbow Haki"]or Settings["Follow Player Select"]or Settings["Auto Tween To Prehistoric Island"]or Settings["Auto Kill Golem"]or Settings["Auto Fix Volcano"]or Settings["Multi Find Leviathan"]or Settings["Fully Event Prehistoric Island"]or Settings["Auto Multi Raid"]or Settings["Auto Fire Shoot Heart Leviathan"]or Settings["Auto Buy Chip and Attack Law"]or Settings["Fully Trial Draco"]or Settings["Auto Finish Train Quest"]or Settings["Auto Destroy IDK"]or Settings["Auto Finish Train Draco Quest"]or Settings["Auto TTK"]or Settings["Auto Collect Egg"]or Settings["Collect Chest When Server Spawn Legend Items"]then return true;end;end
+	ComputeNoclip = function()
+		if not Settings then return false end
+		if not notsave then notsave = {} end
+		
+		if Settings["Start Farm"] 
+			or Settings["Auto Event Prehistoric Island"]
+			or notsave["Teleport Mirage"]
+			or notsave.SuperHuman 
+		then 
+			return true 
+		end
+		return false
+	end
 	local TweenService = game:GetService("TweenService")
 
 	getgenv().TweenManager = {
@@ -9527,7 +9551,7 @@ __VxezeHubMain = function()
 			end
 		end)
 	end
-
+	EnforceGate = function(c,n,L,U)if L then return true;end;SaveSettings(n,false);if c and c.SetStage then c:SetStage(false);end;VxezeNotify(n,U,"warning",{Key="gate"..n});return false;end
 	AutoWorldSection = stackFarmMain.CreateSection("World Unlock")
 	local v5
 	v5 = nil
@@ -9850,7 +9874,6 @@ __VxezeHubMain = function()
 
 		v11 = createToggle6
 		v11 = v11(tbl14, fn6)
-		EnforceGate = function(c,n,L,U)if L then return true;end;SaveSettings(n,false);if c and c.SetStage then c:SetStage(false);end;VxezeNotify(n,U,"warning",{Key="gate"..n});return false;end
 		SoftGate = function(c,n,L)if not n then VxezeNotify(c,L,"warning",{Key="softgate"..c});end;end
 		SoulReaperSection = stackFarmMain.CreateSection("Soul Reaper")
 		SoulReaperStatus = SoulReaperSection.CreateLabel({ Title = "Status : ..." })
@@ -10055,9 +10078,9 @@ __VxezeHubMain = function()
 
 		getgenv().CheckCountItem = function(arg, arg2)
 			local v18 = next
-			local v19, v20 = GetInventoryItems()
+			local items = GetInventoryItems() or {}
 
-			for _, v21 in v18, v19, v20 do
+			for _, v22 in ipairs(items) do 
 				if v21.Name == arg and v21.Count and v21.Count >= arg2 then
 					return true
 				end
@@ -16661,8 +16684,7 @@ end)]])
 	AutoHiddenEvent = function()
 		WatchHiddenAnnouncements()
 		LoadHiddenSkip()
-		local v6 = GetHiddenProgress()
-		SweepHiddenRemote(v6)
+		local v6 = GetHiddenProgress() or {}
 		if ClaimHiddenReward() then
 			return
 		end
@@ -19595,11 +19617,8 @@ end)]])
 	end
 
 	RollGacha = function(arg, arg2)
-		local serverTimeNow = workspace:GetServerTimeNow()
-		if serverTimeNow < (GachaTimers[arg] or 0) then
-			return
-		end
-		GachaTimers[arg] = serverTimeNow + 60
+		if tick() < (GachaTimersarg or 0) then return end
+		GachaTimersarg = tick() + 60
 		local ok, result = pcall(GachaClient.CheckGachaAsync, arg, "Blox Fruit Gacha")
 		if not ok or type(result) ~= "table" then
 			VxezeNotify("Gacha", "Gacha is not available right now", "warning")
@@ -19617,7 +19636,7 @@ end)]])
 		end
 
 		if pcall(GachaClient.PurchaseGachaAsync, arg) then
-			GachaTimers[arg] = serverTimeNow + 5
+			GachaTimersarg = tick() + 5
 			VxezeNotify("Gacha", "Rolled successfully", "success")
 		end
 	end
@@ -21381,15 +21400,10 @@ end)]])
 		end
 
 		SafeMultiSelect = function(arg)
-			local v7 = Settings[arg]
-
-			if type(v7) ~= "table" then
-				local tbl15 = {}
-				Settings[arg] = tbl15
-				v7 = tbl15
+			if type(Settings[arg]) ~= "table" then
+				Settings[arg] = {}
 			end
-
-			return v7
+			return Settings[arg]
 		end
 
 		SelectedZoneCFrame = function()
@@ -23026,7 +23040,10 @@ end)]])
 			Vector3.new(5203.809, 24.00104, 2013.0905),
 		}
 
-		playerModule = require(game.Players.LocalPlayer:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule"))
+		local ok, playerModule = pcall(function()
+			return require(game.Players.LocalPlayer:WaitForChild("PlayerScripts", 10):WaitForChild("PlayerModule", 10))
+		end)
+		if not ok then playerModule = nil end
 
 		DriveBoatToTiki = function()
 			for _, v8 in ipairs(tbl13) do
@@ -31407,7 +31424,18 @@ Summon And Kill Rip Indra]],
 	AimbotTarget = function()if Settings["Select Method Aimbot"]=="Select Player"then return game.Workspace.Characters:FindFirstChild(Settings["Select Player PVP"]or"");end;return ClosestPartaimbot();end
 	RunAimbot = function()local c=AimbotTarget();local n=c and(c:FindFirstChild("HumanoidRootPart"));if not n then return;end;replicatedStorage6.Hit=n.CFrame;replicatedStorage6.Target=c;getgenv().AimPos=CFrame.new(n.CFrame.p,n.Position+n.Velocity/0.5);end
 	RunTeleportPlayer = function()local c=TeleportPlayer();local n=c and c.Character and(c.Character:FindFirstChild("HumanoidRootPart"));if n then ToTarget(n.CFrame);end;end
-	EnsureWaterPlatform = function()local c=workspace:FindFirstChild("WaterWalk");if not c then c=Instance.new("Part");c.Name="WaterWalk";c.Size=Vector3.new(80,1,80);c.Transparency=1;c.Anchored=true;c.Parent=workspace;end;return c;end
+	EnsureWaterPlatform = function()
+		local c = workspace:FindFirstChild("WaterWalk")
+		if c then return c end
+		c = Instance.new("Part")
+		c.Name = "WaterWalk"
+		c.Size = Vector3.new(80, 1, 80)
+		c.Transparency = 1
+		c.Anchored = true
+		c.CanCollide = false
+		c.Parent = workspace
+		return c
+	end
 	RunWalkOnWater = function()local n= localPlayer .Character;local c,L=n and(n:FindFirstChild("HumanoidRootPart")),n and(n:FindFirstChildOfClass("Humanoid"));if not c or not L then return;end;local U,w=EnsureWaterPlatform(),not L.Sit and math.abs(c.Position.Y+60)<=60;if U.CanCollide~=w then U.CanCollide=w;end;n=Vector3.new(c.Position.X,-5,c.Position.Z);if w and(U.Position-n).Magnitude>15 then U.Position=n;end;end
 
 	PvpPanel = {
@@ -32426,6 +32454,7 @@ Summon And Kill Rip Indra]],
 
 		local function fn3(arg, arg2)
 			local v9 = fn2(arg or "")
+			arg2 = math.max(arg2 or 100, 4)
 			if #v9 > arg2 then
 				return v9:sub(1, arg2 - 3) .. "..."
 			end
@@ -33023,7 +33052,13 @@ Summon And Kill Rip Indra]],
 
 	if not getgenv().VxezeAimHook then
 		getgenv().VxezeAimHook = true
-		hookmetamethod(game, "__namecall", newcclosure(function(...) end))
+		if hookmetamethod and newcclosure then
+			local oldNamecall
+			oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+				local method = getnamecallmethod()
+				return oldNamecall(self, ...)
+			end))
+		end
 	end
 
 	RunService = game:GetService("RunService")
@@ -33118,5 +33153,9 @@ Summon And Kill Rip Indra]],
 
 	getgenv().__VXEZE_LOADED = true
 end
-
-__VxezeHubMain()
+task.spawn(function()
+    local ok, err = pcall(__VxezeHubMain)
+    if not ok then
+        warn("Vxeze Hub Fatal error: " .. tostring(err))
+    end
+end)
