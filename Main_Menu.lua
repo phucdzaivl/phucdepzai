@@ -2,6 +2,57 @@ if getgenv().Loaded then
    return
 end
 
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+Pos = CFrame.new(0, 30, 0)
+
+function ATween(cf)
+    if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = LocalPlayer.Character.HumanoidRootPart
+    local distance = (hrp.Position - cf.Position).Magnitude
+    local speed = 300
+    local tween = TweenService:Create(hrp, TweenInfo.new(distance / speed, Enum.EasingStyle.Linear), {CFrame = cf})
+    tween:Play()
+    tween.Completed:Wait()
+end
+
+function StopTween(bool)
+    if bool == false then
+        pcall(function()
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame
+            end
+        end)
+    end
+end
+
+function EquipWeapon(weapon)
+    if not weapon then return end
+    local char = LocalPlayer.Character
+    local backpack = LocalPlayer.Backpack
+    if backpack:FindFirstChild(weapon) then
+        char.Humanoid:EquipTool(backpack[weapon])
+    elseif char:FindFirstChild(weapon) then
+        -- already equipped
+    end
+end
+
+function UnEquipWeapon(weapon)
+    if LocalPlayer.Character:FindFirstChild(weapon) then
+        LocalPlayer.Character.Humanoid:UnequipTools()
+    end
+end
+
+function AutoHaki()
+    if not LocalPlayer.Character:FindFirstChild("HasBuso") then
+        pcall(function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
+        end)
+    end
+end
+
 if getgenv().Debugging then 
     print("Debug Is On")
 end
