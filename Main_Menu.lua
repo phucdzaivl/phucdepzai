@@ -53,6 +53,31 @@ function AutoHaki()
     end
 end
 
+function Hop()
+    pcall(function()
+        local PlaceID = game.PlaceId
+        local HttpService = game:GetService("HttpService")
+        local TeleportService = game:GetService("TeleportService")
+        local servers = HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. PlaceID .. "/servers/Public?sortOrder=Asc&limit=100"))
+        
+        for _, server in pairs(servers.data) do
+            if server.playing < server.maxPlayers and server.id ~= game.JobId then
+                TeleportService:TeleportToPlaceInstance(PlaceID, server.id, LocalPlayer)
+                break
+            end
+        end
+    end)
+end
+
+local Load = {
+    Text = "Hello"
+}
+
+-- Bật cờ Kaitun chính
+_G.XERUNKAITUN = true
+_G.AutoFarm = true
+_G.SelectWeapon = "Melee"
+
 if getgenv().Debugging then 
     print("Debug Is On")
 end
